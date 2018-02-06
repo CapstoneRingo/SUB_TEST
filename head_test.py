@@ -14,20 +14,20 @@ import time
 
 GPIO_0 = '0'
 GPIO_1 = '1'
-GPIO_2 = '2'
-GPIO_3 = '3'
-GPIO_4 = '4'
-GPIO_5 = '5'
-GPIO_6 = '6'
-GPIO_7 = '7'
+GPIO_2 = '2'		# Drive Roller (REMOVAL)				- OUT
+GPIO_3 = '3'		# Z-Axis Actuator (FRAME - POS 2)		- OUT
+GPIO_4 = '4'		# Z-Axis Actuator (FRAME - POS 1)		- OUT
+GPIO_5 = '5'		# Vacuum Control (HEAD)					- OUT
+GPIO_6 = '6'		# Rotation Actuator (HEAD)				- OUT
+GPIO_7 = '7'		# Z-Axis Actuator (HEAD)				- OUT
 GPIO_8 = '8'
 GPIO_9 = '9'
 GPIO_10 = 'A'
 GPIO_11 = 'B'
 GPIO_12 = 'C'
 GPIO_13 = 'D'
-GPIO_14 = 'E'
-GPIO_15 = 'F'
+GPIO_14 = 'E'		# Limit Switch (AXIS - Y)				- IN
+GPIO_15 = 'F'		# Limit Switch (AXIS - X)				- IN
 
 
 USB_PORT = "/dev/ttyACM0"
