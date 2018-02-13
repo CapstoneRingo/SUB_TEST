@@ -172,7 +172,11 @@ def main():
 	sub_menu_2 = sub_menu_2 + "\n  h. GetPCBFromInsp() "
 	sub_menu_2 = sub_menu_2 + "\n  i. SetPCBInTray_OUT() "
 
-	help_t = "Enter the number of letter in front of the period\n"
+	confirm = "\nSet pin "
+	confirm_h = " to high."
+	confirm_l = " to low."
+
+	help_t = "\n\n HELP: \nEnter the number of letter in front of the period\n"
 	help_t = help_t + "to select a function from the menu or sub-menu"
 
 	error = "\nLook ... it's obvious this is your first time ... so, um - yeah?"
@@ -180,17 +184,19 @@ def main():
 	while command != 'exit':
 		command = input(menu)
 
-		if(command == "help")
-			print help_t
-		else if (command == "1")
+		if command == "help":
+			print(help_t)
+		elif command == "1":
 			pin = input(sub_menu_1)
 			setHigh(pin, setPort)
-		else if (command == "2")
+			print(confirm, pin, confirm_h)
+		elif command == "2":
 			pin = input(sub_menu_1)
 			setLow(pin, setPort)
-		else if (command == "3")
+			print(confirm, pin, confirm_l)
+		elif command == "3":
 			command_2 = input(sub_menu_2)
 			print("\nYeah .. this part isn't finished, still in Nirvanna?")
-		else if (command != "exit")
+		elif command != "exit":
 			print(error)
 main()
