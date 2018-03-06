@@ -61,13 +61,13 @@ class RINGO_GUI:
         self.root.mainloop()
 
     def define_devices(self):
-        self.devices.append(device_TK(self.root,'Head_Linear','0',self.port,self.testmode))
-        self.devices.append(device_TK(self.root,'Head_Rotary','1',self.port,self.testmode))
+        self.devices.append(device_TK(self.root,'Head (Linear)','0',self.port,self.testmode))
+        self.devices.append(device_TK(self.root,'Head (Rotary)','1',self.port,self.testmode))
         self.devices.append(device_TK(self.root,'Roller','2',self.port,self.testmode))
         self.devices.append(device_TK(self.root,'Jig','3',self.port,self.testmode))
-        self.devices.append(device_TK(self.root,'Overlay_Pusher','5',self.port,self.testmode))
+        self.devices.append(device_TK(self.root,'Overlay Pusher','5',self.port,self.testmode))
         self.devices.append(device_TK(self.root,'Vacuum','4',self.port,self.testmode))
-        self.devices.append(device_TK(self.root,'Backing_Pinner','6',self.port,self.testmode))
+        self.devices.append(device_TK(self.root,'Backing Pinner','6',self.port,self.testmode))
 
         for d in self.devices:
             d.frame.pack()
