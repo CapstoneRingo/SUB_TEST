@@ -2,8 +2,7 @@ import tkinter as tk
 import devices
 import serial
 
-# Device TKinter View - this is just how TKInter will use and display the device
-# class
+# Device TKinter View
 class device_TK:
 
     def __init__(self,parent,name,GPIO,port,testmode=0):
@@ -13,8 +12,6 @@ class device_TK:
         self.state = 0
 
         self.frame = tk.Frame(parent) # define GUI frame object
-
-        # Define label and button
         self.label = tk.Label(self.frame,justify='left',anchor='center',
         text=self.device.name + ':',width=20)
         self.button = tk.Button(self.frame,text='OFF',fg='white',bg='red',
@@ -33,8 +30,6 @@ class device_TK:
         elif self.state == 0:
             self.device.setLow(self.testmode)
             self.button.config(text='OFF',bg='red')
-
-
 
 # RINGO GUI main app class: create instance to run application
 class RINGO_GUI:
@@ -60,11 +55,13 @@ class RINGO_GUI:
         # Define devices
         self.define_devices()
 
+        # Define widgets
+
+        # Layout widgets
+
         # Begin main loop
         self.root.mainloop()
 
-    # This function defines the devices that RINGO will connect to via USB using
-    # the device TKinter wrapper class
     def define_devices(self):
         self.devices.append(device_TK(self.root,'Head (Linear)','0',self.port,
         self.testmode))
@@ -80,15 +77,10 @@ class RINGO_GUI:
         self.devices.append(device_TK(self.root,'Backing Pinner','6',self.port,
         self.testmode))
 
-        # Do a simple "pack" command to arrange all the device button/label
-        # combos into the main window
         for d in self.devices:
             d.frame.pack()
 
-
-
 # Main application
 if __name__ == '__main__':
-    # Run the application: pass in a one for testing without actually connecting
-    # via USB (GUI testing), pass in a 0 to actually connect to RINGO
+
     window = RINGO_GUI(1)
