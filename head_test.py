@@ -37,7 +37,7 @@ print" ... welcome to VIRUS CITY!!!!"
 print"Using port " + USB_PORT
 
 #Open port for communication
-serPort = serial.Serial(USB_PORT, 19200, timeout=0)
+serPort = serial.Serial(USB_PORT, 19200, timeout=None)
 
 # GetPCBFromTray_IN
 #
