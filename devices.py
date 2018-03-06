@@ -10,11 +10,20 @@ class device:
         self.GPIO = pin
         self.port = port # a pyserial port connection object
 
-    def setHigh(self):
+    def setHigh(self,test=0):
+
+        if test == 1:
+            return
+
         self.port.write("gpio set " + gpioIndex + "\r")
         print "Device %s set to HIGH via %s GPIO #%s" %(self.name, self.port.name, self.pin)
         return
 
-    def setLow(self):
+    def setLow(self,test=0):
+
+        if test == 1:
+            return
+
         self.port.write("gpio clear " + gpioIndex + "\r")
         print "Device %s set to LOW via %s GPIO #%s" %(self.name, self.port.name, self.pin)
+        return
