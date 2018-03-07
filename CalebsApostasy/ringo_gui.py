@@ -69,6 +69,9 @@ class RINGO_GUI:
 
         # Layout widgets
 
+        # Define closing behavior
+        self.root.protocol('WM_DELETE_WINDOW', self.on_close())
+
         # Begin main loop
         self.root.mainloop()
 
@@ -89,6 +92,13 @@ class RINGO_GUI:
 
         for d in self.devices:
             d.frame.pack()
+
+    def on_close(self):
+        if self.testmode == 0:
+            self.port.close()
+
+        print "Good bye!"
+        self.root.destroy()
 
 # Main application
 if __name__ == '__main__':
