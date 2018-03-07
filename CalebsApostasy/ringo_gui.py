@@ -1,4 +1,4 @@
-import tkinter as tk
+import Tkinter as tk
 import devices
 import serial
 
@@ -40,7 +40,17 @@ class RINGO_GUI:
         self.testmode = test_mode
 
         if test_mode == 0:
-            self.port = serial.Serial('/dev/ttyACM0',19200,timeout=None)
+            USB_PORT_0 = "/dev/ttyACM0"
+            USB_PORT_1 = "/dev/ttyACM1"
+
+            # Set up serial connection
+            try:
+                self.port = serial.Serial(USB_PORT_0, 9600, timeout=None)
+            except Exception as e:
+                 self.port = serial.Serial(USB_PORT_1, 9600, timeout=None)
+
+            print "Using serial port %s" % (self.port.port)
+
         else:
             self.port = 'Poop'
 
@@ -63,18 +73,18 @@ class RINGO_GUI:
         self.root.mainloop()
 
     def define_devices(self):
-        self.devices.append(device_TK(self.root,'Head (Linear)','0',self.port,
+        self.devices.append(device_TK(self.root,'????','1',self.port,
         self.testmode))
-        self.devices.append(device_TK(self.root,'Head (Rotary)','1',self.port,
+        self.devices.append(device_TK(self.root,'????','2',self.port,
         self.testmode))
-        self.devices.append(device_TK(self.root,'Roller','2',self.port,
+        self.devices.append(device_TK(self.root,'Overlay Pinner','3',self.port,
         self.testmode))
-        self.devices.append(device_TK(self.root,'Jig','3',self.port,self.testmode))
-        self.devices.append(device_TK(self.root,'Overlay Pusher','5',self.port,
+        self.devices.append(device_TK(self.root,'Overlay Pusher','4',self.port,self.testmode))
+        self.devices.append(device_TK(self.root,'Jig','5',self.port,
         self.testmode))
-        self.devices.append(device_TK(self.root,'Vacuum','4',self.port,
+        self.devices.append(device_TK(self.root,'Roller','6',self.port,
         self.testmode))
-        self.devices.append(device_TK(self.root,'Backing Pinner','6',self.port,
+        self.devices.append(device_TK(self.root,'Head (Linear)','7',self.port,
         self.testmode))
 
         for d in self.devices:
@@ -83,4 +93,4 @@ class RINGO_GUI:
 # Main application
 if __name__ == '__main__':
 
-    window = RINGO_GUI(1)
+    window = RINGO_GUI(0)
