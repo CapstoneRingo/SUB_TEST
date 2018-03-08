@@ -1,7 +1,15 @@
-# This Script is to be used as a blink test with delay 
-# using the GPIO code given from Numato. 
+#	FILE NAME 	:	blink_test.py
+#	AUTHOR 		: 	Nolan McCulloch
+# 	CONTRIBUTORS: 	Numato Labs
+#	DATE CREATED:	Feb 2018
+#	PYTHON VER	:	2.7
+#	REVISION	:	2.1.2
 
-#see GPIO_COMMANDS.txt for available commands and descriptions. 
+#	INFO
+# This Script is to be used as a blink test with delay
+# using the GPIO code given from Numato.
+
+#see GPIO_COMMANDS.txt for available commands and descriptions.
 
 #LIBRARIES USED
 
@@ -34,21 +42,21 @@ USB_PORT_1 = "/dev/ttyACM1"
 
 print" ... welcome to VIRUS CITY!!!!"
 
-# Set up serial connection 
+# Set up serial connection
 serPort = serial.Serial(USB_PORT_0, 9600, timeout=None)
 if (not serPort.is_open):
 	serPort = serial.Serial(USB_PORT_1, 9600, timeout=None)
-print"Using port " + serPort.port		
+print"Using port " + serPort.port
 
 # setHigh(gpioIndex)
-# This function takes the index of the Pin that is to be set and executes 
+# This function takes the index of the Pin that is to be set and executes
 # command to set that specific index to the HIGH state (3.3V)
 def setHigh(gpioIndex, setPort):
 	serPort.write("gpio set " + gpioIndex  + "\r")
 	return;
 
 # setLow(gpioIndex)
-# This function takes the index of the Pin that is to be cleared and executes 
+# This function takes the index of the Pin that is to be cleared and executes
 # command to set that specific index to the LOW state (~0V)
 def setLow(gpioIndex, setPort):
 	serPort.write("gpio clear " + gpioIndex  + "\r")
@@ -105,6 +113,3 @@ def main():
 		print i
 
 main()
-
-
-
