@@ -70,7 +70,7 @@ class RINGO_GUI:
         # Layout widgets
 
         # Define closing behavior
-        self.root.protocol('WM_DELETE_WINDOW', self.on_close())
+        # self.root.protocol('WM_DELETE_WINDOW', self.on_close())
 
         # Begin main loop
         self.root.mainloop()
