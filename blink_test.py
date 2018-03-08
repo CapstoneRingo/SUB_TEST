@@ -1,9 +1,9 @@
-#	FILE NAME 	:	blink_test.py
-#	AUTHOR 		: 	Nolan McCulloch
-# 	CONTRIBUTORS: 	Numato Labs
-#	DATE CREATED:	Feb 2018
-#	PYTHON VER	:	2.7
-#	REVISION	:	2.1.2
+#	FILE NAME 		:	blink_test.py
+#	AUTHOR 			: 	Nolan McCulloch
+# 	CONTRIBUTORS	: 	Numato Labs
+#	DATE CREATED	:	Feb 2018
+#	PYTHON VER		:	2.7
+#	REVISION		:	2.1.2
 
 #	INFO
 # This Script is to be used as a blink test with delay
