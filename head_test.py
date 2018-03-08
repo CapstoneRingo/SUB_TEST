@@ -1,6 +1,16 @@
-# This Script is to be used as a script to test the head design, controlling the
-# various pnumatic valves that steer and control the head. This progrogram's
+#	FILE NAME 	:	head_test.py
+#	AUTHOR 		: 	Nolan McCulloch
+# 	CONTRIBUTORS: 	Caleb Groves, Spencer Diehl
+#	DATE CREATED:	Feb 2018
+#	PYTHON VER	:	2.7
+#	REVISION	:	2.0.2
+
+#	INFO
+# This Script is to be usedto test the head design, manipulating the
+# various pnumatic valvesto control the head. This progrogram's
 # purpose is to outline the various functions and movements of this subsystem.
+# for the time being most of the functions are only wrappers and place holders
+# for the functions that will be implemented in System Engineering
 
 #see GPIO_COMMANDS.txt for available commands and descriptions.
 
@@ -35,7 +45,6 @@ wrt_cnt = 0
 USB_PORT = "/dev/ttyACM0"
 
 
-print(" ... welcome to VIRUS CITY!!!!")
 print("Using port " + USB_PORT)
 
 #Open port for communication
@@ -101,7 +110,7 @@ def SetPCBInJig():
 def GetOVERLAYFromRemoval():
 
 	setHigh(GPIO_6)			# Rotation Actuator 0 position
-	time.sleep(0.5)			
+	time.sleep(0.5)
 	setLow(GPIO_5)			# Suction ON
 	time.sleep(0.5)
 
@@ -165,16 +174,16 @@ def SetOVERLAYInJig():
 # ItemTravel()
 #
 # This fucntion sets the head and other elements in positions that be active as
-# items travel on the head from subsystem to subsystem. 
+# items travel on the head from subsystem to subsystem.
 
 #def ItemTravel()
 
 # HeadFunctionSelect(select)
 #
-# This function uses the select variable passed in and then executes the 
-# appropriate functions. 
+# This function uses the select variable passed in and then executes the
+# appropriate functions.
 
-def HeadFunctionSelect(select): 
+def HeadFunctionSelect(select):
 	if select == "":
 		print(help_t)
 	elif select == 'a':		# GetPCBFromTray_IN()
@@ -188,7 +197,7 @@ def HeadFunctionSelect(select):
 	elif select == 'e':		# RollOVERLAYInJig()
 		RollOVERLAYInJig()
 	elif select == 'f':		# GetPCBFromJig()
-		GetPCBFromJig()	
+		GetPCBFromJig()
 	elif select == 'g':		# SetPCBInInsp()
 		SetPCBInInsp()
 	elif select == 'h':		# GetPCBFromInsp()

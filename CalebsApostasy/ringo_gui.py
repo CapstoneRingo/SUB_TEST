@@ -1,3 +1,10 @@
+#	FILE NAME 	:	ringo_gui.py
+#	AUTHOR 		: 	Caleb Groves
+# 	CONTRIBUTORS: 	Nolan McCulloch
+#	DATE CREATED:	3 Mar 2018
+#	PYTHON VER	:	2.7
+#	REVISION	:	1.0.2
+
 import Tkinter as tk
 import devices
 import serial
