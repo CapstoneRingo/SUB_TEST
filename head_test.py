@@ -1,6 +1,16 @@
-# This Script is to be used as a script to test the head design, controlling the
-# various pnumatic valves that steer and control the head. This progrogram's
+#	FILE NAME 		:	head_test.py
+#	AUTHOR 			: 	Nolan McCulloch
+# 	CONTRIBUTORS	: 	Caleb Groves, Spencer Diehl
+#	DATE CREATED	:	Feb 2018
+#	PYTHON VER		:	2.7
+#	REVISION		:	2.0.2
+
+#	INFO
+# This Script is to be usedto test the head design, manipulating the
+# various pnumatic valvesto control the head. This progrogram's
 # purpose is to outline the various functions and movements of this subsystem.
+# for the time being most of the functions are only wrappers and place holders
+# for the functions that will be implemented in System Engineering
 
 #see GPIO_COMMANDS.txt for available commands and descriptions.
 
@@ -29,12 +39,13 @@ GPIO_13 = 'D'
 GPIO_14 = 'E'		# Limit Switch (AXIS - Y)				- IN
 GPIO_15 = 'F'		# Limit Switch (AXIS - X)				- IN
 
+wrt_cnt = 0
+
 
 USB_PORT = "/dev/ttyACM0"
 
 
-print" ... welcome to VIRUS CITY!!!!"
-print"Using port " + USB_PORT
+print("Using port " + USB_PORT)
 
 #Open port for communication
 serPort = serial.Serial(USB_PORT, 19200, timeout=None)
@@ -50,6 +61,16 @@ serPort = serial.Serial(USB_PORT, 19200, timeout=None)
 
 
 def GetPCBFromTray_IN():
+	# Tray check?
+
+	# Set PNUMATICS
+	setLow(GPIO_6)			# Rotation Actuator 90 position
+	time.sleep(.5)
+	setLow(GPIO_7)			# Head Z LOW position
+	time.sleep(.5)
+	setLow(GPIO_5)			# Suction ON
+	time.sleep(.5)
+
 
 # SetPCBInJig
 #
@@ -64,6 +85,15 @@ def GetPCBFromTray_IN():
 
 def SetPCBInJig():
 
+	setHigh(GPIO_6)			# Rotation Actuator 0 position
+	time.sleep(.5)
+	setLow(GPIO_7)			# Head Z LOW position
+	time.sleep(.5)
+	setHigh(GPIO_5)			# Suction OFF
+	time.sleep(.5)
+
+
+
 # GetOVERLAYFromRemoval
 #
 # This function moves the head over backing removal location and manages the
@@ -76,7 +106,14 @@ def SetPCBInJig():
 # be the combination of all the sub-system test functions in the integrated
 # script.
 
+
 def GetOVERLAYFromRemoval():
+
+	setHigh(GPIO_6)			# Rotation Actuator 0 position
+	time.sleep(0.5)
+	setLow(GPIO_5)			# Suction ON
+	time.sleep(0.5)
+
 
 # SetOVERLAYInJig
 #
@@ -88,7 +125,13 @@ def GetOVERLAYFromRemoval():
 # This would cover the condition where the PCB falls out of the jig or is not
 # correctly placed.
 
+
 def SetOVERLAYInJig():
+
+	setHigh(GPIO_6)			# Rotation Actuator 0 position
+	time.sleep(0.5)
+	#setHigh(
+
 
 # RollOVERLAYInJig
 #
@@ -96,7 +139,7 @@ def SetOVERLAYInJig():
 # movement of the roller and the verticle position of the overlay (position 1 ==
 # tallest position)
 
-def RollOVERLAYInJig():
+#def RollOVERLAYInJig():
 
 # GetPCBFromJig
 #
@@ -105,20 +148,20 @@ def RollOVERLAYInJig():
 # require activate the second position of the second roller actuator and
 # activate the suction of the pnumatic valve.
 
-def GetPCBFromJig():
+#def GetPCBFromJig():
 
 # SetPCBInInsp
 #
 # This function simply sets the overlay in the inspection area and awaits the
 # inspection for bubbles, deformatilities and imperfections to take place.
 
-def SetPCBInInsp():
+#def SetPCBInInsp():
 
 # GetPCBInInsp
 #
 # This function simply gets the overlay from the inspection area.
 
-def GetPCBFromInsp():
+#def GetPCBFromInsp():
 
 # SetPCBInTray_OUT
 #
@@ -126,15 +169,53 @@ def GetPCBFromInsp():
 # the empty output tray. This function controls the twisting and setting of the
 # overlay in the tray.
 
-def SetPCBInTray_OUT():
+#def SetPCBInTray_OUT():
+
+# ItemTravel()
+#
+# This fucntion sets the head and other elements in positions that be active as
+# items travel on the head from subsystem to subsystem.
+
+#def ItemTravel()
+
+# HeadFunctionSelect(select)
+#
+# This function uses the select variable passed in and then executes the
+# appropriate functions.
+
+def HeadFunctionSelect(select):
+	if select == "":
+		print(help_t)
+	elif select == 'a':		# GetPCBFromTray_IN()
+		GetPCBFromTray_IN()
+	elif select == 'b':		# SetPCBInJig()
+		SetPCBInJig()
+	elif select == 'c':		# GetOverlayFromRemoval()
+		GetOVERLAYFromRemoval()
+	elif select == 'd':		# SetOVERLAYInJig()
+		SetOVERLAYInJig()
+	elif select == 'e':		# RollOVERLAYInJig()
+		RollOVERLAYInJig()
+	elif select == 'f':		# GetPCBFromJig()
+		GetPCBFromJig()
+	elif select == 'g':		# SetPCBInInsp()
+		SetPCBInInsp()
+	elif select == 'h':		# GetPCBFromInsp()
+		GetPCBFromInsp()
+	elif select == 'i':		# SetPCBInTray_OUT()
+		SetPCBInTray_OUT()
+	elif select != "exit":
+		print(error)
+
 
 # setHigh(gpioIndex)
 # This function takes the index of the Pin that is to be set and executes
 # command to set that specific index to the HIGH state (3.3V)
 
 def setHigh(gpioIndex, setPort):
-	print"HIGH"
+	#print"HIGH"
 	serPort.write("gpio set " + gpioIndex  + "\r")
+	wrt_cnt
 	return;
 
 # setLow(gpioIndex)
@@ -142,11 +223,43 @@ def setHigh(gpioIndex, setPort):
 # command to set that specific index to the LOW state (~0V)
 
 def setLow(gpioIndex, setPort):
-	print "LOW"
+	#print ("LOW")
 	serPort.write("gpio clear " + gpioIndex  + "\r")
 	return;
 
+def fun_seq():
+	setLow(GPIO_0, serPort)
+	setLow(GPIO_1, serPort)
+	setLow(GPIO_2, serPort)
+	time.sleep(1)
+	setHigh(GPIO_0, serPort)
+	setHigh(GPIO_1, serPort)
+	setHigh(GPIO_2, serPort)
+	time.sleep(2)
 
+
+	setLow(GPIO_0, serPort)
+	time.sleep(.5)
+	setLow(GPIO_1, serPort)
+	time.sleep(.5)
+	setLow(GPIO_2, serPort)
+	time.sleep(.5)
+	setHigh(GPIO_2, serPort)
+	time.sleep(.5)
+	setHigh(GPIO_1, serPort)
+	time.sleep(.5)
+	setHigh(GPIO_0, serPort)
+	time.sleep(2)
+
+def _init():
+	setHigh(GPIO_0, serPort)
+	setHigh(GPIO_1, serPort)
+	setHigh(GPIO_2, serPort)
+	setHigh(GPIO_3, serPort)
+	setHigh(GPIO_4, serPort)
+	setHigh(GPIO_5, serPort)
+	setHigh(GPIO_6, serPort)
+	setHigh(GPIO_7, serPort)
 
 
 def main():
@@ -157,7 +270,8 @@ def main():
 	menu = menu + "\n   1. Turn Pin HIGH"
 	menu = menu + "\n   2. Turn Pin LOW"
 	menu = menu + "\n   3. Perform Head Function"
-	menu = menu + "\n   Enter 'exit' to quit and 'help' for deets"
+	menu = menu + "\n   4. DEMO"
+	menu = menu + "\n   Enter 'exit' to quit and 'help' for deets\n"
 
 	sub_menu_1 = "\n   Select GPIO Pin: "
 
@@ -186,17 +300,21 @@ def main():
 
 		if command == "help":
 			print(help_t)
-		elif command == "1":
+		elif command == 1:
 			pin = input(sub_menu_1)
-			setHigh(pin, setPort)
+			setHigh(pin, serPort)
 			print(confirm, pin, confirm_h)
-		elif command == "2":
+		elif command == 2:
 			pin = input(sub_menu_1)
-			setLow(pin, setPort)
+			setLow(pin, serPort)
 			print(confirm, pin, confirm_l)
-		elif command == "3":
+		elif command == 3:
 			command_2 = input(sub_menu_2)
-			print("\nYeah .. this part isn't finished, still in Nirvanna?")
+			HeadFunctionSelect(command_2)
+		elif command == 3:
+			Demo()
 		elif command != "exit":
 			print(error)
+
+
 main()

@@ -1,4 +1,11 @@
-import tkinter as tk
+#	FILE NAME 	:	ringo_gui.py
+#	AUTHOR 		: 	Caleb Groves
+# 	CONTRIBUTORS   	: 	Nolan McCulloch
+#	DATE CREATED   	:	3 Mar 2018
+#	PYTHON VER     	:	2.7
+#	REVISION       	:	1.0.2
+
+import Tkinter as tk
 import devices
 from TinyG import TinyG
 import serial
@@ -113,7 +120,17 @@ class RINGO_GUI:
         self.testmode = test_mode
 
         if test_mode == 0:
-            self.port = serial.Serial('/dev/ttyACM0',19200,timeout=None)
+            USB_PORT_0 = "/dev/ttyACM0"
+            USB_PORT_1 = "/dev/ttyACM1"
+
+            # Set up serial connection
+            try:
+                self.port = serial.Serial(USB_PORT_0, 9600, timeout=None)
+            except Exception as e:
+                 self.port = serial.Serial(USB_PORT_1, 9600, timeout=None)
+
+            print "Using serial port %s" % (self.port.port)
+
         else:
             self.port = 'Poop'
 
@@ -134,10 +151,14 @@ class RINGO_GUI:
         # Make Axis Controls
         self.create_axis_controls()
 
+        # Define closing behavior
+        # self.root.protocol('WM_DELETE_WINDOW', self.on_close())
+
         # Begin main loop
         self.root.mainloop()
 
     def define_devices(self):
+<<<<<<< HEAD
 
         # Define pneumatics frame
         self.pneumaticsFrame = tk.LabelFrame(self.root,text='Pneumatics Controls')
@@ -150,10 +171,26 @@ class RINGO_GUI:
         self.add_pneumatic('Overlay Pusher','5')
         self.add_pneumatic('Vacuum','4')
         self.add_pneumatic('Backing Pinner','6')
+=======
+        self.devices.append(device_TK(self.root,'????','1',self.port,
+        self.testmode))
+        self.devices.append(device_TK(self.root,'????','2',self.port,
+        self.testmode))
+        self.devices.append(device_TK(self.root,'Overlay Pinner','3',self.port,
+        self.testmode))
+        self.devices.append(device_TK(self.root,'Overlay Pusher','4',self.port,self.testmode))
+        self.devices.append(device_TK(self.root,'Jig','5',self.port,
+        self.testmode))
+        self.devices.append(device_TK(self.root,'Roller','6',self.port,
+        self.testmode))
+        self.devices.append(device_TK(self.root,'Head (Linear)','7',self.port,
+        self.testmode))
+>>>>>>> 9ecdc3a64829e31408adf5ae22b0be79e9d308b0
 
         for d in self.devices:
             d.frame.pack()
 
+<<<<<<< HEAD
         # pack pneumatics frame into main window
         self.pneumaticsFrame.pack()
 
@@ -174,8 +211,16 @@ class RINGO_GUI:
         else:
             print "Ending test. Good day!"
 
+=======
+    def on_close(self):
+        if self.testmode == 0:
+            self.port.close()
+
+        print "Good bye!"
+        self.root.destroy()
+>>>>>>> 9ecdc3a64829e31408adf5ae22b0be79e9d308b0
 
 # Main application
 if __name__ == '__main__':
 
-    window = RINGO_GUI(1)
+    window = RINGO_GUI(0)
