@@ -15,9 +15,9 @@ class device:
         if test == 1:
             return
 
-        self.port.write("gpio set " + gpioIndex + "\r")
+        self.port.write("gpio set " + self.GPIO + "\r")
         print "Device %s set to HIGH via %s GPIO #%s" % (self.name,
-        self.port.name, self.pin)
+        self.port.name, self.GPIO)
         return
 
     def setLow(self,test=0):
@@ -25,7 +25,7 @@ class device:
         if test == 1:
             return
 
-        self.port.write("gpio clear " + gpioIndex + "\r")
+        self.port.write("gpio clear " + self.GPIO + "\r")
         print "Device %s set to LOW via %s GPIO #%s" % (self.name,
-        self.port.name, self.pin)
+        self.port.name, self.GPIO)
         return

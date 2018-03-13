@@ -1,5 +1,6 @@
 import tkinter as tk
 import devices
+from TinyG import TinyG
 import serial
 
 # Device TKinter View
@@ -31,6 +32,78 @@ class device_TK:
             self.device.setLow(self.testmode)
             self.button.config(text='OFF',bg='red')
 
+# Gantry Controls GUI
+class GantryControls:
+
+    def __init__(self,parent,tinyG):
+        self.parent = parent
+        self.tinyG = tinyG
+        self.UIFrame = tk.LabelFrame(self.parent,text='Gantry Controls')
+
+        # Define buttons
+        self.defineUIControls()
+
+        self.UIFrame.pack()
+
+    def defineUIControls(self):
+        # Make buttons
+        self.posXButton = tk.Button(self.UIFrame,text='+X',command=self.jogXPos)
+        self.negXButton = tk.Button(self.UIFrame,text='-X',command=self.jogXNeg)
+        self.posYButton = tk.Button(self.UIFrame,text='+Y',command=self.jogYPos)
+        self.negYButton = tk.Button(self.UIFrame,text='-Y',command=self.jogYNeg)
+
+        # arrange in Frame
+        self.UIFrame.columnconfigure(5,minsize=20)
+        self.UIFrame.rowconfigure(5,minsize=20)
+
+        self.posYButton.grid(row=1,rowspan=2,column=3,columnspan=1,ipadx=3,
+        ipady=3)
+        self.negYButton.grid(row=4,rowspan=2,column=3,columnspan=1,ipadx=3,
+        ipady=3)
+        self.negXButton.grid(row=3,rowspan=1,column=1,columnspan=2,ipadx=3,
+        ipady=3)
+        self.posXButton.grid(row=3,rowspan=1,column=4,columnspan=2,ipadx=3,
+        ipady=3)
+
+    def jogXPos(self):
+        self.tinyG.write('G0 X10')
+
+    def jogXNeg(self):
+        self.tinyG.write('G0 X-10')
+
+    def jogYPos(self):
+        self.tinyG.write('G0 Y10')
+
+    def jogYNeg(self):
+        self.tinyG.write('G0 Y-10')
+
+# Backing Axis Controls UI
+class BackingAxisControls:
+
+    def __init__(self,parent):
+        self.parent = parent
+
+        self.UIFrame = tk.LabelFrame(self.parent,text='Backing Axis')
+
+        # Define buttons
+        self.defineUIControls()
+
+        self.UIFrame.pack()
+
+    def defineUIControls(self):
+
+        self.upButton = tk.Button(self.UIFrame,text='Up')
+        self.downButton = tk.Button(self.UIFrame,text='Down')
+
+        # arrange
+        self.UIFrame.columnconfigure(3,minsize=10)
+        self.UIFrame.rowconfigure(7,minsize=20)
+
+        self.upButton.grid(row=2, column=2, rowspan=2, columnspan=1,
+        ipadx=3, ipady=3)
+        self.downButton.grid(row=7, column=2, rowspan=2, columnspan=1,
+        ipadx=3, ipady=3)
+
 # RINGO GUI main app class: create instance to run application
 class RINGO_GUI:
 
@@ -55,30 +128,52 @@ class RINGO_GUI:
         # Define devices
         self.define_devices()
 
-        # Define widgets
+        # TinyG controller
+        self.tinyG = TinyG('USB0')
 
-        # Layout widgets
+        # Make Axis Controls
+        self.create_axis_controls()
 
         # Begin main loop
         self.root.mainloop()
 
     def define_devices(self):
-        self.devices.append(device_TK(self.root,'Head (Linear)','0',self.port,
-        self.testmode))
-        self.devices.append(device_TK(self.root,'Head (Rotary)','1',self.port,
-        self.testmode))
-        self.devices.append(device_TK(self.root,'Roller','2',self.port,
-        self.testmode))
-        self.devices.append(device_TK(self.root,'Jig','3',self.port,self.testmode))
-        self.devices.append(device_TK(self.root,'Overlay Pusher','5',self.port,
-        self.testmode))
-        self.devices.append(device_TK(self.root,'Vacuum','4',self.port,
-        self.testmode))
-        self.devices.append(device_TK(self.root,'Backing Pinner','6',self.port,
-        self.testmode))
+
+        # Define pneumatics frame
+        self.pneumaticsFrame = tk.LabelFrame(self.root,text='Pneumatics Controls')
+
+        # Define all of the pneumatics controls
+        self.add_pneumatic('Head (Linear)','0')
+        self.add_pneumatic('Head (Rotary)','1')
+        self.add_pneumatic('Roller','2')
+        self.add_pneumatic('Jig','3')
+        self.add_pneumatic('Overlay Pusher','5')
+        self.add_pneumatic('Vacuum','4')
+        self.add_pneumatic('Backing Pinner','6')
 
         for d in self.devices:
             d.frame.pack()
+
+        # pack pneumatics frame into main window
+        self.pneumaticsFrame.pack()
+
+    def add_pneumatic(self,name,GPIO):
+        self.devices.append(device_TK(self.pneumaticsFrame,name,GPIO,self.port,
+        self.testmode))
+
+    def create_axis_controls(self):
+        # Create label frame for buttons
+        self.gantryControls = GantryControls(self.root,self.tinyG)
+        self.backingAxisControls = BackingAxisControls(self.root)
+
+
+    def on_closing(self):
+        if self.testmode == 0:
+            self.port.close()
+            print "%s closed. Goodbye!" % (self.port.name)
+        else:
+            print "Ending test. Good day!"
+
 
 # Main application
 if __name__ == '__main__':
