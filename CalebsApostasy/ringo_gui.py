@@ -198,4 +198,4 @@ class RINGO_GUI:
 # Main application
 if __name__ == '__main__':
 
-    window = RINGO_GUI(0)
+    window = RINGO_GUI(1)
