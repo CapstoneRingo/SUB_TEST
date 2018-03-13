@@ -158,7 +158,6 @@ class RINGO_GUI:
         self.root.mainloop()
 
     def define_devices(self):
-<<<<<<< HEAD
 
         # Define pneumatics frame
         self.pneumaticsFrame = tk.LabelFrame(self.root,text='Pneumatics Controls')
@@ -171,26 +170,10 @@ class RINGO_GUI:
         self.add_pneumatic('Overlay Pusher','5')
         self.add_pneumatic('Vacuum','4')
         self.add_pneumatic('Backing Pinner','6')
-=======
-        self.devices.append(device_TK(self.root,'????','1',self.port,
-        self.testmode))
-        self.devices.append(device_TK(self.root,'????','2',self.port,
-        self.testmode))
-        self.devices.append(device_TK(self.root,'Overlay Pinner','3',self.port,
-        self.testmode))
-        self.devices.append(device_TK(self.root,'Overlay Pusher','4',self.port,self.testmode))
-        self.devices.append(device_TK(self.root,'Jig','5',self.port,
-        self.testmode))
-        self.devices.append(device_TK(self.root,'Roller','6',self.port,
-        self.testmode))
-        self.devices.append(device_TK(self.root,'Head (Linear)','7',self.port,
-        self.testmode))
->>>>>>> 9ecdc3a64829e31408adf5ae22b0be79e9d308b0
 
         for d in self.devices:
             d.frame.pack()
 
-<<<<<<< HEAD
         # pack pneumatics frame into main window
         self.pneumaticsFrame.pack()
 
@@ -211,14 +194,6 @@ class RINGO_GUI:
         else:
             print "Ending test. Good day!"
 
-=======
-    def on_close(self):
-        if self.testmode == 0:
-            self.port.close()
-
-        print "Good bye!"
-        self.root.destroy()
->>>>>>> 9ecdc3a64829e31408adf5ae22b0be79e9d308b0
 
 # Main application
 if __name__ == '__main__':
