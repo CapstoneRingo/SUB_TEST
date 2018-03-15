@@ -52,10 +52,10 @@ class TinyG:
         self.configGantry()
 
     def configurePort(self,port):
-        port_name = '/dev/tty' + self.serialPort.name # concatenate port name
+        port_name = '/dev/tty' + port # concatenate port name
 
         self.serPort = serial.Serial(port=port_name,baudrate=115200,timeout=0)
-        print "TinyG using port " + port_name
+        print "TinyG using port " + self.serPort.name
 
     def write(self,cmd):
         self.serPort.write(cmd + " \r")
@@ -116,3 +116,6 @@ class Trays:
 
     def getTouchpadPosition(self,number):
         return self.touchpads[number-1].currentPosition
+
+    def getTouchpad(self,number):
+        return self.touchpads[number-1]

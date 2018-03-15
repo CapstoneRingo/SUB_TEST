@@ -19,11 +19,11 @@ yout = [0]*50
 for i in range(50):
     ip = t.touchpads[i].inPosition
     op = t.touchpads[i].outPosition
-    
+
     xin[i] = ip.X
     yin[i] = ip.Y
     xout[i] = op.X
     yout[i] = op.Y
-    
+
 plt.plot(xin,yin,'bo',xout,yout,'ro')
 plt.axis([-450,200,-20,300])

@@ -49,12 +49,12 @@ class Head:
         y = position.Y
 
         # Send X-axis command
-        xcmd = "G1 X%f F%s" %(x,speed)
+        xcmd = "G1 X%f F%f" %(x,speed)
         self.tinyG.write(xcmd)
         self.position.X = x
 
         # Send Y-axis command
-        ycmd = "G1 Y%f F%s" %(y,speed)
+        ycmd = "G1 Y%f F%f" %(y,speed)
         self.tinyG.write(ycmd)
         self.position.Y = y
 
