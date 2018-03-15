@@ -109,7 +109,7 @@ class Trays:
 
                 # Assign Out tray position
                 xout = self.outPosition.X + i*self.col_spacing
-                yout = self.outPosition.Y + (self.nrows - j)*self.row_spacing
+                yout = self.outPosition.Y + (self.nrows - j - 1)*self.row_spacing
                 t.outPosition = Position(xout,yout)
 
                 self.touchpads.append(t)
