@@ -129,7 +129,7 @@ class RINGO_GUI:
             except Exception as e:
                  self.port = serial.Serial(USB_PORT_1, 9600, timeout=None)
 
-            print "Using serial port %s" % (self.port.port)
+            print "Using serial port " + self.port.port
 
         else:
             self.port = 'Poop'

@@ -12,7 +12,7 @@ class TinyG:
 
     def configurePort(self,port):
         port_name = '/dev/tty' + port # concatenate port name
-        
+
         self.serPort = serial.Serial(port=port_name,baudrate=115200,timeout=0)
         print "TinyG using port " + port_name
 
