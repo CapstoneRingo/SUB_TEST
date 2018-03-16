@@ -50,7 +50,7 @@ class GantryControls:
         # Define buttons
         self.defineUIControls()
 
-        self.UIFrame.pack()
+        self.UIFrame.pack(side=tk.RIGHT)
 
     def defineUIControls(self):
         # Make buttons
@@ -87,20 +87,22 @@ class GantryControls:
 # Backing Axis Controls UI
 class BackingAxisControls:
 
-    def __init__(self,parent):
+    def __init__(self,parent,tinyG):
         self.parent = parent
+
+        self.tinyG = tinyG
 
         self.UIFrame = tk.LabelFrame(self.parent,text='Backing Axis')
 
         # Define buttons
         self.defineUIControls()
 
-        self.UIFrame.pack()
+        self.UIFrame.pack(side=tk.RIGHT)
 
     def defineUIControls(self):
 
-        self.upButton = tk.Button(self.UIFrame,text='Up')
-        self.downButton = tk.Button(self.UIFrame,text='Down')
+        self.upButton = tk.Button(self.UIFrame,text='Up',command=self.jogUp)
+        self.downButton = tk.Button(self.UIFrame,text='Down',command=self.jogDown)
 
         # arrange
         self.UIFrame.columnconfigure(3,minsize=10)
@@ -110,6 +112,12 @@ class BackingAxisControls:
         ipadx=3, ipady=3)
         self.downButton.grid(row=7, column=2, rowspan=2, columnspan=1,
         ipadx=3, ipady=3)
+
+    def jogUp(self):
+        self.tinyG.write('G0 Z5')
+
+    def jogDown(self):
+        self.tinyG.write('G0 Z-5')
 
 # RINGO GUI main app class: create instance to run application
 class RINGO_GUI:
@@ -151,8 +159,8 @@ class RINGO_GUI:
         # Make Axis Controls
         self.create_axis_controls()
 
-        # Define closing behavior
-        # self.root.protocol('WM_DELETE_WINDOW', self.on_close())
+        # Add G-code text box
+        self.gCodeInput()
 
         # Begin main loop
         self.root.mainloop()
@@ -184,7 +192,22 @@ class RINGO_GUI:
     def create_axis_controls(self):
         # Create label frame for buttons
         self.gantryControls = GantryControls(self.root,self.tinyG)
-        self.backingAxisControls = BackingAxisControls(self.root)
+        self.backingAxisControls = BackingAxisControls(self.root,self.tinyG)
+
+    def gCodeInput(self):
+        # Add Frame
+        self.gCodeFrame = tk.LabelFrame(self.root,text='G Code Input')
+        self.gCodeEdit = tk.Entry(self.gCodeFrame,bd=5)
+        self.gCodeEdit.pack(side=tk.LEFT)
+        self.gCodeSend = tk.Button(self.gCodeFrame,text='SEND',command=self.writeGCode)
+        self.gCodeSend.pack(side=tk.RIGHT)
+        self.gCodeFrame.pack(side=tk.RIGHT)
+
+    def writeGCode(self):
+        # Get text from gCodeEdit
+        gCmd = self.gCodeEdit.get()
+
+        self.tinyG.write(gCmd)
 
 
     def on_closing(self):
