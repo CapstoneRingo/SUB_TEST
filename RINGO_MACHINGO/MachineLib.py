@@ -26,7 +26,7 @@ class Pneumatic:
             self.state = 0
 
         # Write out to serial port
-        self.serialPort.write("gpio " + cmd + self.pinNo + "\r")
+        self.serialPort.write("gpio " + cmd + " " + self.pinNo + "\r")
         # Display to console
         print "Pneumatic device <%s> set to %s via %s GPIO #%s" % (self.name,
         disp, self.serialPort.name, self.pinNo)
@@ -49,7 +49,7 @@ class TinyG:
         self.configurePort(serialPort)
 
         # Setup axes
-        self.configGantry()
+        #self.configGantry()
 
     def configurePort(self,port):
         port_name = '/dev/tty' + port # concatenate port name

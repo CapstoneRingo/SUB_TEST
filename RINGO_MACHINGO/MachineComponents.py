@@ -79,11 +79,11 @@ class OverlayPlacement:
 
         self.position = Position()
 
-    def extend():
+    def extend(self):
         self.jig.actuate(1)
         return
 
-    def retract():
+    def retract(self):
         self.jig.actuate(0)
         return
 
