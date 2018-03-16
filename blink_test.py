@@ -37,54 +37,87 @@ GPIO_14 = 'E'
 GPIO_15 = 'F'
 
 
-USB_PORT_0 = "/dev/ttyACM0"
-USB_PORT_1 = "/dev/ttyACM1"
+USB_PORT = "/dev/ttyACM0"
+DRIVER_PORT = "/dev/ttyUSB1"
 
 print" ... welcome to VIRUS CITY!!!!"
 
 # Set up serial connection
-serPort = serial.Serial(USB_PORT_0, 9600, timeout=None)
-if (not serPort.is_open):
-	serPort = serial.Serial(USB_PORT_1, 9600, timeout=None)
-print"Using port " + serPort.port
+serPort = serial.Serial(USB_PORT, 115200, timeout=None)
+driverPort = serial.Serial(DRIVER_PORT, 115200, timeout=None)
+
 
 # setHigh(gpioIndex)
 # This function takes the index of the Pin that is to be set and executes
 # command to set that specific index to the HIGH state (3.3V)
-def setHigh(gpioIndex, setPort):
+def setHigh(gpioIndex):
 	serPort.write("gpio set " + gpioIndex  + "\r")
 	return;
 
 # setLow(gpioIndex)
 # This function takes the index of the Pin that is to be cleared and executes
 # command to set that specific index to the LOW state (~0V)
-def setLow(gpioIndex, setPort):
+def setLow(gpioIndex):
 	serPort.write("gpio clear " + gpioIndex  + "\r")
 	return;
 
 
 def fun_seq():
-	setLow(GPIO_0, serPort)
-	setLow(GPIO_1, serPort)
-	setLow(GPIO_2, serPort)
+	setLow(GPIO_0)
+	setLow(GPIO_1)
+	setLow(GPIO_2)
+	#setLow(GPIO_3)
+	#setLow(GPIO_4)
+	#setLow(GPIO_5)
+	#setLow(GPIO_6)
+	#setLow(GPIO_7)
 	time.sleep(.5)
-	setHigh(GPIO_0, serPort)
-	setHigh(GPIO_1, serPort)
-	setHigh(GPIO_2, serPort)
+	setHigh(GPIO_0)
+	setHigh(GPIO_1)
+	setHigh(GPIO_2)
+	#setHigh(GPIO_3)
+	#setHigh(GPIO_4)
+	#setHigh(GPIO_5)
+	#setHigh(GPIO_6)
+	#setHigh(GPIO_7)
 	time.sleep(1)
 
+	driverPort.write("G0 Y10 \r")
+	time.sleep(1)
+	driverPort.write("G0 Y-10 \r")
+	time.sleep(1)
 
-	setLow(GPIO_0, serPort)
+	setLow(GPIO_0)
 	time.sleep(.25)
-	setLow(GPIO_1, serPort)
+	setLow(GPIO_1)
 	time.sleep(.25)
-	setLow(GPIO_2, serPort)
+	setLow(GPIO_2)
 	time.sleep(.25)
-	setHigh(GPIO_2, serPort)
+	#setLow(GPIO_3)
+	#time.sleep(.25)
+	#setLow(GPIO_4)
+	#time.sleep(.25)
+	#setLow(GPIO_5)
+	#time.sleep(.25)
+	#setLow(GPIO_6)
+	#time.sleep(.25)
+	#setLow(GPIO_7)
+	#time.sleep(.25)
+	#setHigh(GPIO_7)
+	#time.sleep(.25)
+	#setHigh(GPIO_6)
+	#time.sleep(.25)
+	#setHigh(GPIO_5)
+	#time.sleep(.25)
+	#setHigh(GPIO_4)
+	#time.sleep(.25)
+	#setHigh(GPIO_3)
+	#time.sleep(.25)
+	setHigh(GPIO_2)
 	time.sleep(.25)
-	setHigh(GPIO_1, serPort)
+	setHigh(GPIO_1)
 	time.sleep(.25)
-	setHigh(GPIO_0, serPort)
+	setHigh(GPIO_0)
 	time.sleep(1)
 
 
@@ -92,24 +125,23 @@ def main():
 	i = 0
 
 	# initialize all pins high.
-	setHigh(GPIO_0, serPort)
-	setHigh(GPIO_1, serPort)
-	setHigh(GPIO_2, serPort)
-	setHigh(GPIO_3, serPort)
-	setHigh(GPIO_4, serPort)
-	setHigh(GPIO_5, serPort)
-	setHigh(GPIO_6, serPort)
-	setHigh(GPIO_7, serPort)
+	setHigh(GPIO_0)
+	setHigh(GPIO_1)
+	setHigh(GPIO_2)
+	setHigh(GPIO_3)
+	setHigh(GPIO_4)
+	setHigh(GPIO_5)
+	setHigh(GPIO_6)
+	setHigh(GPIO_7)
 
 #	print"Press Q to quit"
 	while True:
 		fun_seq()
 		i = i+1
-		if (i%3 == 0):
-			serPort.close()
-			time.sleep(0.25)
-			serPort.open()
-			serPort.xonxoff = True
+		serPort.close()
+		time.sleep(0.25)
+		serPort.open()
+		serPort.xonxoff = True
 		print i
 
 main()

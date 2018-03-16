@@ -12,7 +12,7 @@ import time
 
 
 
-USB_PORT = "/dev/ttyUSB0"
+USB_PORT = "/dev/ttyUSB1"
 
 print"Using port " + USB_PORT
 
@@ -24,9 +24,9 @@ serPort = serial.Serial(port=USB_PORT, baudrate=115200, timeout=0)
 
 def main():
 	while(1):
-		serPort.write("G0 X1 \r")
+		serPort.write("G0 Y10 \r")
 		time.sleep(1)
-		serPort.write("G0 X-1 \r")
+		serPort.write("G0 Y-10 \r")
 		time.sleep(1)
 
 main()
