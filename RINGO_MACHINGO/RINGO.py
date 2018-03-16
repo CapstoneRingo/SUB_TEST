@@ -41,11 +41,11 @@ class RINGO:
 
         # set travel for axes
         self.tinyG.write('{tr1:15}')
-        self.tinyG.write('{tr2:15}')
+        self.tinyG.write('{tr2:10.5}')
         self.tinyG.write('{tr3:10}')
 
         # home axes
-        self.tinyG.write('G28.2 X0 Y0')
+        self.tinyG.write('G28.2 Y0 X0')
         self.tinyG.write('G28.3 X0 Y0')
 
     def pickPCB(self,number):
@@ -60,6 +60,7 @@ class RINGO:
         # perform operations
         self.head.rotateUp()
         self.head.extend()
+        # add in forward motion/jiggling motion
         self.head.grab()
         self.head.retract()
         self.head.rotateDown()
