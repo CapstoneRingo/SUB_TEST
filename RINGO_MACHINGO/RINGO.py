@@ -42,7 +42,7 @@ class RINGO:
         # set travel for axes
         self.tinyG.write('{tr1:15}')
         self.tinyG.write('{tr2:10.5}')
-        self.tinyG.write('{tr3:10}')
+        self.tinyG.write('{tr3:8}')
 
         # home axes
         self.tinyG.write('G28.2 Y0 X0')
