@@ -12,7 +12,7 @@ import time
 
 
 
-USB_PORT = "/dev/ttyUSB1"
+USB_PORT = "/dev/ttyUSB0"
 
 print"Using port " + USB_PORT
 
