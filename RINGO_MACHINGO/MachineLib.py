@@ -35,7 +35,7 @@ class Pneumatic:
             elif self.serialPort == '/dev/ttyACM1':
                 self.serialPort = '/dev/ttyACM0'
 
-            print "Serial port switched to %s" % (self.serialPort.name)
+            print "Serial port on pneumatic device %s switched to %s" % (self.name, self.serialPort.name)
 
             self.actuate(cmd) # run the pneumatics command again
 
@@ -70,7 +70,17 @@ class TinyG:
         print "TinyG using port " + self.serPort.name
 
     def write(self,cmd):
-        self.serPort.write(cmd + " \r")
+        try:
+
+            self.serPort.write(cmd + " \r")
+
+        except:
+            if self.serPort == '/dev/ttyUSB0':
+                self.serPort = '/dev/ttyUSB1'
+            elif self.serPort == '/dev/ttyUSB1':
+                self.serPort = '/dev/ttyUSB0'
+
+        print "TinyG port switched to %s" % (self.serPort.name)
 
 # Class for PCB---------------------------------------------------------------
 class Touchpad:
