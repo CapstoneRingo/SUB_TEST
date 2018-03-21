@@ -17,6 +17,11 @@ class Head:
         # Define position
         self.position = Position()
 
+        # Startup commands
+        self.retract()
+        self.rollerUp()
+        self.rotateUp()
+
     def extend(self):
         self.linear.actuate(1)
         return
@@ -39,6 +44,14 @@ class Head:
 
     def rotateUp(self):
         self.rotary.actuate(0)
+        return
+
+    def rollerDown(self):
+        self.roller.actuate(1)
+        return
+
+    def rollerUp(self):
+        self.roller.actuate(0)
         return
 
     def move(self,position,speed):
@@ -80,6 +93,9 @@ class OverlayPlacement:
 
         self.position = Position()
 
+        # Startup commands
+        self.retract()
+
     def extend(self):
         self.jig.actuate(1)
         return
@@ -99,6 +115,7 @@ class BackingRemoval:
         # Pneumatics
         self.pinner = Pneumatic("Pinner",str(backingPin[0]),serial_port)
         self.pusher = Pneumatic("Pusher",str(backingPin[1]),serial_port)
+        self.motor = Pneumatic("DCMotor",str(backingPin[2]),serial_port)
 
         # position
         self.position = Position()
@@ -112,7 +129,15 @@ class BackingRemoval:
         return
 
     def push(self):
-        self.pusher.actuate(1)
-        time.sleep(1)
         self.pusher.actuate(0)
+        time.sleep(1)
+        self.pusher.actuate(1)
+        return
+
+    def motorOn(self):
+        self.motor.actuate(0)
+        return
+
+    def motorOff(self):
+        self.motor.actuate(1)
         return

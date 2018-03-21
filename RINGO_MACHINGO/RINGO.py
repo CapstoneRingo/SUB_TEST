@@ -1,6 +1,7 @@
 import serial
 from MachineLib import *
 from MachineComponents import *
+import time
 
 TRAY_IN_POSITION = Position(100,0)
 TRAY_OUT_POSITION = Position(600,0)
@@ -22,14 +23,27 @@ class RINGO:
         # Setup machine components/stations
         headPins = [1, 2, 4, 3]
         jigPin = 7
-        backingPins = [6,5]
-
+        backingPins = [6,5,0]
 
         self.head = Head(self.tinyG,self.pneumaticsPort,headPins)
         self.jig = OverlayPlacement(self.pneumaticsPort,jigPin)
         self.backingRemoval = BackingRemoval(self.pneumaticsPort,self.tinyG,backingPins)
 
         self.trays = Trays(TRAY_IN_POSITION,TRAY_OUT_POSITION,12,80)
+
+        self.getSettled()
+
+    def getSettled(self):
+        self.tinyG.write('g0 y1')
+        self.tinyG.write('g0 y-1')
+
+        time.sleep(3)
+
+        self.head.extend()
+        self.head.retract()
+        self.head.rollerUp()
+        self.head.rotateUp()
+        self.jig.retract()
 
     def readConfigFile(self):
         pass
@@ -47,10 +61,30 @@ class RINGO:
         # set units to metric
         self.tinyG.write('G21')
 
+        # Set step sizes
+        self.tinyG.write('{1sa:1.8}')
+        self.tinyG.write('{2sa:1.8}')
+        self.tinyG.write('{3sa:1.8}')
+
+        # Set microstepping
+        self.tinyG.write('{1mi:8}')
+        self.tinyG.write('{2mi:8}')
+        self.tinyG.write('{3mi:8}')
+
+        # Set polarity of motors
+        self.tinyG.write('{2po:0}')
+        self.tinyG.write('{3po:0}')
+        self.tinyG.write('{1po:1}')
+
         # set travel for axes
-        self.tinyG.write('{1tr:7}')
-        self.tinyG.write('{2tr:10.5}')
-        self.tinyG.write('{3tr:8}')
+        self.tinyG.write('{1tr:15}') # should be 1tr:15
+        self.tinyG.write('{2tr:10.5}') # should be 2tr:10.5
+        self.tinyG.write('{3tr:8}') # should be 3tr:8
+
+        self.tinyG.write('$XSN=1')
+        self.tinyG.write('$YSN=1')
+        self.tinyG.write('$ZSN=1')
+        self.tinyG.write('$ST=0')
 
         self.tinyG.write('G91') # relative positioning
 

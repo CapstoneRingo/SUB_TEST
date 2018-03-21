@@ -61,9 +61,13 @@ class TinyG:
         #self.configGantry()
 
     def configurePort(self,port):
-        port_name = '/dev/tty' + port # concatenate port name
 
-        self.serPort = serial.Serial(port=port_name,baudrate=115200,timeout=0)
+        try:
+            self.serPort = serial.Serial('/dev/ttyUSB0',baudrate=115200,timeout=None)
+        except:
+            print "Couldn't open USB0"
+            self.serPort = serial.Serial('/dev/ttyUSB1',baudrate=115200,timeout=None)
+
         print "TinyG using port " + self.serPort.name
 
     def write(self,cmd):
@@ -77,7 +81,7 @@ class TinyG:
             elif self.serPort == '/dev/ttyUSB1':
                 self.serPort = '/dev/ttyUSB0'
 
-        print "TinyG port switched to %s" % (self.serPort.name)
+                print "TinyG port switched to %s" % (self.serPort.name)
 
 # Class for PCB---------------------------------------------------------------
 class Touchpad:
