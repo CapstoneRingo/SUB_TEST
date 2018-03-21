@@ -23,6 +23,8 @@ class RINGO:
         self.jig = OverlayPlacement(jigPin)
         self.backingRemoval = BackingRemoval(self.tinyG,backingPins)
 
+        # Function that makes sure the pneumatics and axes are in the right
+        # spots for machine operation
         self.getSettled()
 
     def getSettled(self):
@@ -114,5 +116,4 @@ class RINGO:
 
     def gcode(self,cmd):
         self.tinyG.write(cmd)
-
-r = RINGO()
+        return
