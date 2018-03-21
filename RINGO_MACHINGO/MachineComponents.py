@@ -4,15 +4,15 @@ import time
 # Head-------------------------------------------------------------------------
 class Head:
 
-    def __init__(self,tinyG,serial_port,headPins):
+    def __init__(self,tinyG,headPins):
 
         self.tinyG = tinyG # assign machine tinyG to this guy
 
         # Define pneumatic components
-        self.linear = Pneumatic('Head (Linear)',str(headPins[0]),serial_port)
-        self.rotary = Pneumatic('Head (Rotary)',str(headPins[1]),serial_port)
-        self.vacuum = Pneumatic('Vacuum',str(headPins[2]),serial_port)
-        self.roller = Pneumatic('Roller',str(headPins[3]),serial_port)
+        self.linear = Pneumatic('Head (Linear)',str(headPins[0]))
+        self.rotary = Pneumatic('Head (Rotary)',str(headPins[1]))
+        self.vacuum = Pneumatic('Vacuum',str(headPins[2]))
+        self.roller = Pneumatic('Roller',str(headPins[3]))
 
         # Define position
         self.position = Position()
@@ -54,7 +54,7 @@ class Head:
         self.roller.actuate(0)
         return
 
-    def move(self,position,speed):
+    #def move(self,position,speed):
 
         self.moveToNeutral(speed)
 
@@ -71,7 +71,7 @@ class Head:
         self.tinyG.write(ycmd)
         self.position.Y = y
 
-    def moveToNeutral(self,speed):
+    #def moveToNeutral(self,speed):
         # Pull the head up
         self.retract()
         self.rotateUp()
@@ -86,10 +86,10 @@ class Head:
 # Class for overlay placement--------------------------------------------------
 class OverlayPlacement:
 
-    def __init__(self,serial_port,overlayPin):
+    def __init__(self,overlayPin):
 
         # pneumatics
-        self.jig = Pneumatic('Jig Extension',str(overlayPin),serial_port)
+        self.jig = Pneumatic('Jig Extension',str(overlayPin))
 
         self.position = Position()
 
@@ -107,15 +107,15 @@ class OverlayPlacement:
 # Class for backing removal----------------------------------------------------
 class BackingRemoval:
 
-    def __init__(self,serial_port,tinyG,backingPin):
+    def __init__(self,tinyG,backingPin):
 
         # tinyG
         self.tinyG = tinyG
 
         # Pneumatics
-        self.pinner = Pneumatic("Pinner",str(backingPin[0]),serial_port)
-        self.pusher = Pneumatic("Pusher",str(backingPin[1]),serial_port)
-        self.motor = Pneumatic("DCMotor",str(backingPin[2]),serial_port)
+        self.pinner = Pneumatic("Pinner",str(backingPin[0]))
+        self.pusher = Pneumatic("Pusher",str(backingPin[1]))
+        self.motor = Pneumatic("DCMotor",str(backingPin[2]))
 
         # position
         self.position = Position()

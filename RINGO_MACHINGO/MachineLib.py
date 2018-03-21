@@ -3,15 +3,26 @@ import serial
 # Class as a wrapper/interface for pneumatics----------------------------------
 class Pneumatic:
 
-    def __init__(self,name,pin_no,serial_port):
+    def __init__(self,name,pin_no):
         # Initialize properties
         self.name = name
         self.pinNo = str(pin_no)
-        self.serialPort = serial_port # a pyserial port connection object
 
         # Actuate OFF for starters
         self.state = 0
-        self.actuate(0)
+        # self.actuate(1)
+        # self.actuate(0)
+
+        try:
+            # Write out to serial port
+            port = serial.Serial('/dev/ttyACM0',baudrate=115200,timeout=None)
+        except:
+            port = serial.Serial('/dev/ttyACM1',baudrate=115200,timeout=None)
+
+        port.write('gpio set ' + self.pinNo + ' \r')
+        port.write('gpio clear ' + self.pinNo + ' \r')
+
+        port.close()
 
     def actuate(self,cmd):
 
@@ -52,15 +63,15 @@ class Position:
 # Class for TinyG controller interface----------------------------------------
 class TinyG:
 
-    def __init__(self,serialPort):
+    def __init__(self):
 
         # Configure serial port
-        self.configurePort(serialPort)
+        self.configurePort()
 
         # Setup axes
         #self.configGantry()
 
-    def configurePort(self,port):
+    def configurePort(self):
 
         try:
             self.serPort = serial.Serial('/dev/ttyUSB0',baudrate=115200,timeout=None)
@@ -76,12 +87,7 @@ class TinyG:
             self.serPort.write(cmd + " \r")
 
         except:
-            if self.serPort == '/dev/ttyUSB0':
-                self.serPort = '/dev/ttyUSB1'
-            elif self.serPort == '/dev/ttyUSB1':
-                self.serPort = '/dev/ttyUSB0'
-
-                print "TinyG port switched to %s" % (self.serPort.name)
+            print "TinyG write failed!!!"
 
 # Class for PCB---------------------------------------------------------------
 class Touchpad:
