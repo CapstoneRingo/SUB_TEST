@@ -60,6 +60,17 @@ class RINGO:
         # self.tinyG.write('{xtn:0}') # infinite axis
         # self.tinyG.write('{ytm:470}')
         # self.tinyG.write('{ytn:0}')
+        self.checkHoming()
+
+
+    def checkHoming(self):
+        r = raw_input("HAS HOMING OPERATION BEEN COMPLETED??? (ENTER <YES> TO CONTINUE) ")
+
+        if r == "<YES>":
+            print "HOMING STATED TO BE COMPLETE"
+        else:
+            print "NOT A VALID CONFIRMATION FOR HOMING COMPLETION"
+            self.checkHoming()
 
     def readConfigFile(self):
         pass
