@@ -37,7 +37,7 @@ GPIO_14 = 'E'
 GPIO_15 = 'F'
 
 
-USB_PORT = "/dev/ttyACM0"
+USB_PORT = "/dev/ttyACM1"
 DRIVER_PORT = "/dev/ttyUSB0"
 
 print" ... welcome to VIRUS CITY!!!!"

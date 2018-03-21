@@ -18,6 +18,8 @@ class device_TK:
         self.testmode = testmode
         self.device.setLow(self.testmode) # set device to OFF initially
         self.state = 0
+        self.port = port
+        self.GPIO = GPIO
 
         self.frame = tk.Frame(parent) # define GUI frame object
         self.label = tk.Label(self.frame,justify='left',anchor='center',
@@ -32,12 +34,22 @@ class device_TK:
     def switch(self):
         self.state ^= 1 # switch state
 
+        try:
+
+            port = serial.Serial('/dev/ttyACM0',baudrate=115200,timeout=None)
+
+        except:
+
+            port = serial.Serial('/dev/ttyACM1',baudrate=115200,timeout=None)
+
         if self.state == 1:
-            self.device.setHigh(self.testmode)
+            port.write('gpio set ' + str(self.GPIO) + ' \r')
             self.button.config(text='ON',bg='green')
         elif self.state == 0:
-            self.device.setLow(self.testmode)
+            port.write('gpio clear ' + str(self.GPIO) + ' \r')
             self.button.config(text='OFF',bg='red')
+
+        port.close()
 
 # Gantry Controls GUI
 class GantryControls:
@@ -171,14 +183,14 @@ class RINGO_GUI:
         self.pneumaticsFrame = tk.LabelFrame(self.root,text='Pneumatics Controls')
 
         # Define all of the pneumatics controls
-        self.add_pneumatic('0','0')
-        self.add_pneumatic('1','1')
-        self.add_pneumatic('2','2')
-        self.add_pneumatic('3','3')
+        self.add_pneumatic('0','1')
+        self.add_pneumatic('1','2')
+        self.add_pneumatic('2','3')
+        self.add_pneumatic('3','4')
         self.add_pneumatic('4','5')
-        self.add_pneumatic('5','4')
-        self.add_pneumatic('6','6')
-        self.add_pneumatic('7','7')
+        self.add_pneumatic('5','6')
+        self.add_pneumatic('6','7')
+        self.add_pneumatic('7','8')
 
         for d in self.devices:
             d.frame.pack()
