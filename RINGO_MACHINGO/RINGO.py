@@ -3,9 +3,6 @@ from MachineLib import *
 from MachineComponents import *
 import time
 
-TRAY_IN_POSITION = Position(100,0)
-TRAY_OUT_POSITION = Position(600,0)
-
 # All units in MM
 class RINGO:
 
@@ -25,8 +22,6 @@ class RINGO:
         self.head = Head(self.tinyG,headPins)
         self.jig = OverlayPlacement(jigPin)
         self.backingRemoval = BackingRemoval(self.tinyG,backingPins)
-
-        self.trays = Trays(TRAY_IN_POSITION,TRAY_OUT_POSITION,12,80)
 
         self.getSettled()
 
@@ -116,38 +111,5 @@ class RINGO:
         # Homing settings
         self.tinyG.write('{xlb:10}')
         self.tinyG.write('{ylb:10}')
-
-    def pickPCB(self,number):
-
-        # get pcb position
-        t = self.trays.getTouchpad(number)
-        p = t.inPosition
-
-        # send head to position
-        self.head.move(p,20)
-
-        # perform operations
-        self.head.rotateUp()
-        self.head.extend()
-        # add in forward motion/jiggling motion
-        self.head.grab()
-        self.head.retract()
-        self.head.rotateDown()
-
-    def placePCB(self,number):
-
-        # get pcb position
-        t = self.trays.getTouchpad(number)
-        p = t.outPosition
-
-        # send head to position
-        self.head.move(p,20)
-
-        # perform operations
-        self.headrotateUp()
-        self.head.extend()
-        self.head.drop()
-        self.head.retract()
-        self.head.rotateDown()
 
 r = RINGO()
