@@ -26,14 +26,16 @@ class Pneumatic:
             self.state = 0
 
         # Try
+        print "Going to try to write to %s" % (self.serialPort.name)
+
         try:
             # Write out to serial port
             self.serialPort.write("gpio " + cmd + " " + self.pinNo + "\r")
         except:
-            if self.serialPort == '/dev/ttyACM0':
-                self.serialPort = '/dev/ttyACM1'
-            elif self.serialPort == '/dev/ttyACM1':
-                self.serialPort = '/dev/ttyACM0'
+            if self.serialPort.name == '/dev/ttyACM0':
+                self.serialPort.name = '/dev/ttyACM1'
+            elif self.serialPort.name == '/dev/ttyACM1':
+                self.serialPort.name = '/dev/ttyACM0'
 
             print "Serial port on pneumatic device %s switched to %s" % (self.name, self.serialPort.name)
 

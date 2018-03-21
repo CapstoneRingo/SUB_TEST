@@ -171,13 +171,14 @@ class RINGO_GUI:
         self.pneumaticsFrame = tk.LabelFrame(self.root,text='Pneumatics Controls')
 
         # Define all of the pneumatics controls
-        self.add_pneumatic('Head (Linear)','0')
-        self.add_pneumatic('Head (Rotary)','1')
-        self.add_pneumatic('Roller','2')
-        self.add_pneumatic('Jig','3')
-        self.add_pneumatic('Overlay Pusher','5')
-        self.add_pneumatic('Vacuum','4')
-        self.add_pneumatic('Backing Pinner','6')
+        self.add_pneumatic('0','0')
+        self.add_pneumatic('1','1')
+        self.add_pneumatic('2','2')
+        self.add_pneumatic('3','3')
+        self.add_pneumatic('4','5')
+        self.add_pneumatic('5','4')
+        self.add_pneumatic('6','6')
+        self.add_pneumatic('7','7')
 
         for d in self.devices:
             d.frame.pack()
@@ -221,4 +222,4 @@ class RINGO_GUI:
 # Main application
 if __name__ == '__main__':
 
-    window = RINGO_GUI(1)
+    window = RINGO_GUI(0)

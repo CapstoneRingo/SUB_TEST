@@ -20,9 +20,14 @@ class RINGO:
         self.configureTinyG()
 
         # Setup machine components/stations
-        self.head = Head(self.tinyG,self.pneumaticsPort)
-        self.jig = OverlayPlacement(self.pneumaticsPort)
-        self.backingRemoval = BackingRemoval(self.pneumaticsPort,self.tinyG)
+        headPins = [1, 2, 4, 3]
+        jigPin = 7
+        backingPins = [6,5]
+
+
+        self.head = Head(self.tinyG,self.pneumaticsPort,headPins)
+        self.jig = OverlayPlacement(self.pneumaticsPort,jigPin)
+        self.backingRemoval = BackingRemoval(self.pneumaticsPort,self.tinyG,backingPins)
 
         self.trays = Trays(TRAY_IN_POSITION,TRAY_OUT_POSITION,12,80)
 
@@ -30,7 +35,10 @@ class RINGO:
         pass
 
     def configurePorts(self):
-        self.pneumaticsPort =  serial.Serial('/dev/ttyACM0',9600,timeout=0)
+        try:
+            self.pneumaticsPort =  serial.Serial('/dev/ttyACM0',115200,timeout=None)
+        except:
+            self.pneumaticsPort =  serial.Serial('/dev/ttyACM1',115200,timeout=None)
 
         self.tinyG = TinyG('USB0')
 
@@ -40,13 +48,15 @@ class RINGO:
         self.tinyG.write('G21')
 
         # set travel for axes
-        self.tinyG.write('{tr1:15}')
-        self.tinyG.write('{tr2:10.5}')
-        self.tinyG.write('{tr3:8}')
+        self.tinyG.write('{1tr:7}')
+        self.tinyG.write('{2tr:10.5}')
+        self.tinyG.write('{3tr:8}')
+
+        self.tinyG.write('G91') # relative positioning
 
         # home axes
-        self.tinyG.write('G28.2 Y0 X0')
-        self.tinyG.write('G28.3 X0 Y0')
+        #self.tinyG.write('G28.2 Y0 X0')
+        #self.tinyG.write('G28.3 X0 Y0')
 
     def pickPCB(self,number):
 
@@ -80,3 +90,5 @@ class RINGO:
         self.head.drop()
         self.head.retract()
         self.head.rotateDown()
+
+r = RINGO()
