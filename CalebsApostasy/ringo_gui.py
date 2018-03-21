@@ -166,13 +166,13 @@ class RINGO_GUI:
         self.define_devices()
 
         # TinyG controller
-        self.tinyG = TinyG('USB0')
+        #self.tinyG = TinyG('USB1')
 
         # Make Axis Controls
-        self.create_axis_controls()
+        #self.create_axis_controls()
 
         # Add G-code text box
-        self.gCodeInput()
+        #self.gCodeInput()
 
         # Begin main loop
         self.root.mainloop()
@@ -183,14 +183,14 @@ class RINGO_GUI:
         self.pneumaticsFrame = tk.LabelFrame(self.root,text='Pneumatics Controls')
 
         # Define all of the pneumatics controls
-        self.add_pneumatic('0','1')
-        self.add_pneumatic('1','2')
-        self.add_pneumatic('2','3')
-        self.add_pneumatic('3','4')
-        self.add_pneumatic('4','5')
-        self.add_pneumatic('5','6')
-        self.add_pneumatic('6','7')
-        self.add_pneumatic('7','8')
+        self.add_pneumatic('DC Motor','0')
+        self.add_pneumatic('Head (Linear)','1')
+        self.add_pneumatic('Head (Rotary)','2')
+        self.add_pneumatic('Roller','3')
+        self.add_pneumatic('4','4')
+        self.add_pneumatic('Overlay Pusher','5')
+        self.add_pneumatic('Backing Pinner','6')
+        self.add_pneumatic('Jig','7')
 
         for d in self.devices:
             d.frame.pack()
