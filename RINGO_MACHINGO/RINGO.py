@@ -112,4 +112,7 @@ class RINGO:
         self.tinyG.write('{xlb:10}')
         self.tinyG.write('{ylb:10}')
 
+    def gcode(self,cmd):
+        self.tinyG.write(cmd)
+
 r = RINGO()
