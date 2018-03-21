@@ -125,6 +125,9 @@ class RINGO:
         self.tinyG.write('{xlb:10}')
         self.tinyG.write('{ylb:10}')
 
+        # Power settings
+        self.tinyG.write('{3pm:3}')
+
     def gcode(self,cmd):
         self.tinyG.write(cmd)
         return
