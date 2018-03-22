@@ -25,7 +25,7 @@ class RINGO:
 
         # Function that makes sure the pneumatics and axes are in the right
         # spots for machine operation
-        self.getSettled()
+        #self.getSettled()
 
     def getSettled(self):
         # set to relative positioning, jog the y axis
@@ -55,7 +55,7 @@ class RINGO:
             return
 
         # Home the tinyG
-        self.tinyG.write('g28.2 x0 y0')
+        self.tinyG.write('g28.2 x0 g28.2 y0')
         # self.tinyG.write('{xtm:1000}') # max travel
         # self.tinyG.write('{xtn:0}') # infinite axis
         # self.tinyG.write('{ytm:470}')
@@ -128,6 +128,30 @@ class RINGO:
         # Power settings
         self.tinyG.write('{3pm:3}')
 
-    def gcode(self,cmd):
-        self.tinyG.write(cmd)
+    def moveX(self,posx,speed):
+        cmd = 'g1 f%f x%f \r' % (speed, posx)
+
+        status = False
+
+        while (not self.getGStatus(5)):
+            status = self.getGStatus(5)
+
+        print "Machine is moving"
+
+        while (not self.getGStatus(3)):
+            status = self.getGStatus(3)
+
+        print "Move completed!"
         return
+
+
+    def getGStatus(self,code):
+        self.tinyG.write('{sr:{stat:t}} \r')
+        sr = self.tinyG.serPort.read(100)
+
+        a = sr.find('\"stat\":' + str(code))
+
+        if a != -1:
+            return True
+        else:
+            return False

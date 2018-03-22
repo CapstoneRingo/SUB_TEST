@@ -15,32 +15,33 @@ write('{sv:0}')
 
 def moveX(posx,speed):
     cmd = 'g1 f%f x%f \r' % (speed, posx)
+    s.open()
     s.write(cmd)
 
-    status = 0
+    status = False
 
-    while(status != '5'):
-        status = getStatus()
+    while(not getStatus(5)):
+        status = getStatus(5)
 
     print "Machine is moving"
 
-    while(status != '3'):
-        status = getStatus()
+    while(not getStatus(3)):
+        status = getStatus(3)
 
     print "Move completed!"
+    s.close()
     return
 
-def getStatus():
+def getStatus(code):
     s.write('{sr:{stat:t}} \r')
     sr = s.read(100)
 
-    a = sr.find('stat')
+    a = sr.find('\"stat\":' + str(code))
 
-    try:
-        b = sr[a + 6]
-    except:
-        b = 'poop'
-
-    return b
+    if a != -1:
+        return True
+    else:
+        return False
 
 write('g91')
+s.close()

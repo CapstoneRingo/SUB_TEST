@@ -74,10 +74,10 @@ class TinyG:
     def configurePort(self):
 
         try:
-            self.serPort = serial.Serial('/dev/ttyUSB0',baudrate=115200,timeout=None)
+            self.serPort = serial.Serial('/dev/ttyUSB0',baudrate=115200,timeout=0)
         except:
             print "Couldn't open USB0"
-            self.serPort = serial.Serial('/dev/ttyUSB1',baudrate=115200,timeout=None)
+            self.serPort = serial.Serial('/dev/ttyUSB1',baudrate=115200,timeout=0)
 
         print "TinyG using port " + self.serPort.name
 
