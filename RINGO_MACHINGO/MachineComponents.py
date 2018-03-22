@@ -31,11 +31,11 @@ class Head:
         return
 
     def grab(self):
-        self.vacuum.actuate(1)
+        self.vacuum.actuate(0)
         return
 
     def drop(self):
-        self.vacuum.actuate(0)
+        self.vacuum.actuate(1)
         return
 
     def rotateDown(self):
