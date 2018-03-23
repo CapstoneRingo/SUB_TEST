@@ -34,25 +34,29 @@ from RINGO import *
 import time
 
 # DEFINE CONSTANTS
-BKRM_POS1_X =                       # mm - position of first vacuum contact
-BKRM_POS2_X =                       # mm - position of complete back remove
-BKRM_POS3_X =                       # mm - position of backing drop
+BKRM_POS1_X = 375           # mm - position of first vacuum contact
+BKRM_POS2_X =               # mm - position to create initial peel
+BKRM_POS3_X =               # mm - position to completely remove backing
+DROP_POS_X  = 250           # mm - position of backing drop
 
-BKRM_POS1_Y =                       # mm - position of first vacuum contact
-BKRM_POS2_Y =                       # mm - position of complete back remove
-BKRM_POS3_Y =                       # mm - position of backing drop
+BKRM_POS1_Y = 430           # mm - position of first vacuum contact
+DROP_POS_Y  = 250           # mm - position of backing drop
 
-CRIT_DELAY = 5                      # seconds - maximium travel time delay
-DRAG_DELAY = 5                      # seconds - delay required to remove backing
+BKRM_POS1_Z = 0             # mm - position of roller at first overlay contact
+BKRM_POS1_Z = 10            # mm - position of roller to create initial peel
+BKRM_POS1_Z = 15            # mm - position of roller to release backing paper
 
-DRAG_SPEED =                        # mm / min - speed gantry when removing
+CRIT_DELAY = 10             # seconds - maximium travel time delay
+DRAG_DELAY = 5              # seconds - delay required to remove backing
+
+DRAG_SPEED =                # mm / min - speed gantry when removing
 
 CONTIN_MODE = False
 END_COUNT = 0
 
 # DEFINE GLOBALS
-r = RINGO()                         # create and init Machine Object
-count = 0
+r = RINGO()                 # create and init Machine Object
+count = 1
 
 
 def getOverlay() :
@@ -60,42 +64,46 @@ def getOverlay() :
     count += count
     print("Overlays Removed = " + count)
 
-    # OPTIONAL FEATURE: shut down after 'n' overlays are placed
-    #if(count == END_COUNT) :
-    #    CONTIN_MODE = False
+    #OPTIONAL FEATURE: shut down after 'n' overlays are placed
+    if(count == END_COUNT) :
+       CONTIN_MODE = False
 
-    # Go to 'Grab overlay from stack' position
-    r.gcode('g0 x'+BKRM_POS1_X+' y'+BKRM_POS1_Y)
+    # Rotate Head down and go to 'Grab overlay from stack' position
+    r.head.rotateDown()
+    r.gcode('g0 x'+str(BKRM_POS1_X))
+    r.gcode('g0 y'+str(BKRM_POS1_Y))
     time.sleep(CRIT_DELAY)
 
     # Head sequence required to pick up an overlay
-    r.BackingRemoval.push()
-    r.Head.rotateDown()
-    r.Head.extend()
-    r.Head.grab()
-    r.BackingRemoval.motorOn()
+    r.backingRemoval.push()
+    r.head.extend()
+    r.head.grab()
+    r.backingRemoval.motorOn()
+
+    #Pull overlay up to roller and recenter vacuum head
 
     # Completely pull overly over roller at complete remove position.
-    r.gcode('g0 x'+BKRM_POS2_X+' y'+BKRM_POS2_Y) # CHANGE TO SLOW!!!
+    r.gcode('g1 F20 x'+str(BKRM_POS2_X)) # CHANGE TO SLOW!!!
     time.sleep(DRAG_DELAY)
 
     # Retract the head system and return backing removal to rest state
-    r.BackingRemoval.motorOff()
-    r.Head.retract()
+    r.backingRemoval.motorOff()
+    r.head.retract()
 
     # Move to drop location.
-    r.gcode('g0 x'+BKRM_POS3_X+' y'+BKRM_POS3_Y)
+    r.gcode('g0 x'+str(BKRM_POS3_X))
     time.sleep(CRIT_DELAY)
 
     # Drop the overlay and get into joggin position.
-    r.Head.drop()
-    r.Head.rotateUp()
+    r.head.drop()
+    r.head.rotateUp()
 
 
 
 def main() :
-    r.getSettled()                  # does this need to come before homing?
-    r.home()                        # Q: is there a way to home? Can we wrap this?
+    #SPENCER: Pretty sure these are done when r = RINGO() is created
+    #r.getSettled()                  # does this need to come before homing?
+    #r.home()                        # Q: is there a way to home? Can we wrap this?
 
     getOverlay()
     while(CONTIN_MODE) :
