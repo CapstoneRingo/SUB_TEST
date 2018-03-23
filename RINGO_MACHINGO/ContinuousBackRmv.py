@@ -3,7 +3,7 @@
 # 	CONTRIBUTORS	: 	Caleb Groves, Spencer Diehl
 #	DATE CREATED	:	23 MAR 2018
 #	PYTHON VER		:	2.7
-#	REVISION		:	1.0.0
+#	REVISION		:	1.0.1
 
 #	INFO
 #   This programm simply homes the gantry axis system and then moves to the
@@ -84,6 +84,7 @@ def getOverlay() :
 
     # Completely pull overly over roller at complete remove position.
     r.gcode('g1 F20 x'+str(BKRM_POS2_X)) # CHANGE TO SLOW!!!
+    r.gcode('g1 F40 z'+str(BKRM_POS2_Z))
     time.sleep(DRAG_DELAY)
 
     # Retract the head system and return backing removal to rest state
