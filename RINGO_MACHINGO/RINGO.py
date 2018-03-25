@@ -94,16 +94,20 @@ class RINGO:
         # Set polarity of motors
         self.tinyG.write('{2po:0}')
         self.tinyG.write('{3po:0}')
-        self.tinyG.write('{1po:1}')
+        self.tinyG.write('{1po:0}')
 
         # set travel for axes
         self.tinyG.write('{1tr:15}') # should be 1tr:15
         self.tinyG.write('{2tr:10.5}') # should be 2tr:10.5
         self.tinyG.write('{3tr:8}') # should be 3tr:8
 
-        self.tinyG.write('$XSN=3')
-        self.tinyG.write('$YSN=3')
-        self.tinyG.write('$ZSN=3')
+        #Set limit switches
+        self.tinyG.write('$XSN=1')
+        self.tinyG.write('$XSX=0')
+        self.tinyG.write('$YSN=1')
+        self.tinyG.write('$YSX=0')
+        self.tinyG.write('$ZSN=1')
+        self.tinyG.write('$ZSX=0')
         self.tinyG.write('$ST=0')
         self.tinyG.write('G90') # relative positioning
 
