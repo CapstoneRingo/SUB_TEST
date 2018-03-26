@@ -1,18 +1,20 @@
-#	FILE NAME 		:	ContinuousBackRmv.py
-#	AUTHOR 			: 	Nolan McCulloch
-# 	CONTRIBUTORS	: 	Caleb Groves, Spencer Diehl
+#	FILE NAME 		:	TrayUnloadTest.py
+#	AUTHOR 			  : 	Nolan McCulloch
+#	CONTRIBUTORS	: 	Caleb Groves, Spencer Diehl
 #	DATE CREATED	:	23 MAR 2018
 #	PYTHON VER		:	2.7
-#	REVISION		:	1.0.1
+#	REVISION		  :	1.0.1
 
 #	INFO
-#   This programm simply homes the gantry axis system and then moves to the
-#   position directly in front of the backing removal station. It then initiates
-#   and runs a full backing removal routine.
+#   This program iterates through an input tray, storing the current current 
+#   count of the PCB being used at the moment to determine which PCB to grab 
+#   next. This information is saved in a ______ file and checked every 
+#   itteration to ensure that in the event of device shutdown or restart, it 
+#   can begin from the same location that it left off. 
 
-#   The program has 2 main modes. A single removal mode or a continuous removal
-#   mode where the backings are removed continuously and dropped in a specified
-#   location.
+#   Because the process is currently openloop, it must make some assumptions 
+#   about the orientation of the trays, PCB's and head. Below is a small diagram
+#   that illustrates the correct orientation of each element. s
 
 #   TESTS
 #   Below are enumerated tests and data that can be collected using this program
@@ -34,15 +36,6 @@ from RINGO import *
 import time
 
 # DEFINE CONSTANTS
-<<<<<<< HEAD
-BKRM_POS1_X =  375                  # mm - position of first vacuum contact
-BKRM_POS2_X =  350                  # mm - position of complete back remove
-BKRM_POS3_X =  350                     # mm - position of backing drop
-
-BKRM_POS1_Y = 430                   # mm - position of first vacuum contact
-BKRM_POS2_Y = 430                      # mm - position of complete back remove
-BKRM_POS3_Y = 430                      # mm - position of backing drop
-=======
 BKRM_POS1_X = 377           # mm - position of first vacuum contact
 BKRM_POS2_X = 365           # mm - position to create initial peel
 BKRM_POS3_X = 355           # mm - position to completely remove backing
@@ -50,7 +43,6 @@ DROP_POS_X  = 250           # mm - position of backing drop
 
 BKRM_POS1_Y = 430           # mm - position of first vacuum contact
 DROP_POS_Y  = 250           # mm - position of backing drop
->>>>>>> bd85d23e18c12694cf3c577c9345521d74e2f33f
 
 BKRM_POS1_Z = 35            # mm - position of roller at first overlay contact
 BKRM_POS1_Z = 10            # mm - drop of roller to create initial peel
@@ -96,12 +88,8 @@ def getOverlay() :
     #Pull overlay up to roller and recenter vacuum head
 
     # Completely pull overly over roller at complete remove position.
-<<<<<<< HEAD
-    r.gcode('g1 f'+DRAG_SPEED+' x'+BKRM_POS2_X+' y'+BKRM_POS2_Y) # CHANGE TO SLOW!!!
-=======
     r.gcode('g1 F20 x'+str(BKRM_POS2_X)) # CHANGE TO SLOW!!!
     r.gcode('g1 F40 z'+str(BKRM_POS2_Z))
->>>>>>> bd85d23e18c12694cf3c577c9345521d74e2f33f
     time.sleep(DRAG_DELAY)
 
     # Retract the head system and return backing removal to rest state
@@ -119,12 +107,9 @@ def getOverlay() :
 
 
 def main() :
-<<<<<<< HEAD
-=======
     #SPENCER: Pretty sure these are done when r = RINGO() is created
     #r.getSettled()                  # does this need to come before homing?
     #r.home()                        # Q: is there a way to home? Can we wrap this?
->>>>>>> bd85d23e18c12694cf3c577c9345521d74e2f33f
 
     getOverlay()
     while(CONTIN_MODE) :
