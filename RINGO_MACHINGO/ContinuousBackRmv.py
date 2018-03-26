@@ -34,6 +34,15 @@ from RINGO import *
 import time
 
 # DEFINE CONSTANTS
+<<<<<<< HEAD
+BKRM_POS1_X =  375                  # mm - position of first vacuum contact
+BKRM_POS2_X =  350                  # mm - position of complete back remove
+BKRM_POS3_X =  350                     # mm - position of backing drop
+
+BKRM_POS1_Y = 430                   # mm - position of first vacuum contact
+BKRM_POS2_Y = 430                      # mm - position of complete back remove
+BKRM_POS3_Y = 430                      # mm - position of backing drop
+=======
 BKRM_POS1_X = 377           # mm - position of first vacuum contact
 BKRM_POS2_X = 365           # mm - position to create initial peel
 BKRM_POS3_X = 355           # mm - position to completely remove backing
@@ -41,6 +50,7 @@ DROP_POS_X  = 250           # mm - position of backing drop
 
 BKRM_POS1_Y = 430           # mm - position of first vacuum contact
 DROP_POS_Y  = 250           # mm - position of backing drop
+>>>>>>> bd85d23e18c12694cf3c577c9345521d74e2f33f
 
 BKRM_POS1_Z = 35            # mm - position of roller at first overlay contact
 BKRM_POS1_Z = 10            # mm - drop of roller to create initial peel
@@ -86,8 +96,12 @@ def getOverlay() :
     #Pull overlay up to roller and recenter vacuum head
 
     # Completely pull overly over roller at complete remove position.
+<<<<<<< HEAD
+    r.gcode('g1 f'+DRAG_SPEED+' x'+BKRM_POS2_X+' y'+BKRM_POS2_Y) # CHANGE TO SLOW!!!
+=======
     r.gcode('g1 F20 x'+str(BKRM_POS2_X)) # CHANGE TO SLOW!!!
     r.gcode('g1 F40 z'+str(BKRM_POS2_Z))
+>>>>>>> bd85d23e18c12694cf3c577c9345521d74e2f33f
     time.sleep(DRAG_DELAY)
 
     # Retract the head system and return backing removal to rest state
@@ -105,9 +119,12 @@ def getOverlay() :
 
 
 def main() :
+<<<<<<< HEAD
+=======
     #SPENCER: Pretty sure these are done when r = RINGO() is created
     #r.getSettled()                  # does this need to come before homing?
     #r.home()                        # Q: is there a way to home? Can we wrap this?
+>>>>>>> bd85d23e18c12694cf3c577c9345521d74e2f33f
 
     getOverlay()
     while(CONTIN_MODE) :
