@@ -34,13 +34,13 @@ from RINGO import *
 import time
 
 # DEFINE CONSTANTS
-BKRM_POS1_X =                       # mm - position of first vacuum contact
-BKRM_POS2_X =                       # mm - position of complete back remove
-BKRM_POS3_X =                       # mm - position of backing drop
+BKRM_POS1_X =  375                  # mm - position of first vacuum contact
+BKRM_POS2_X =  350                  # mm - position of complete back remove
+BKRM_POS3_X =  350                     # mm - position of backing drop
 
-BKRM_POS1_Y =                       # mm - position of first vacuum contact
-BKRM_POS2_Y =                       # mm - position of complete back remove
-BKRM_POS3_Y =                       # mm - position of backing drop
+BKRM_POS1_Y = 430                   # mm - position of first vacuum contact
+BKRM_POS2_Y = 430                      # mm - position of complete back remove
+BKRM_POS3_Y = 430                      # mm - position of backing drop
 
 CRIT_DELAY = 5                      # seconds - maximium travel time delay
 DRAG_DELAY = 5                      # seconds - delay required to remove backing
@@ -76,7 +76,7 @@ def getOverlay() :
     r.BackingRemoval.motorOn()
 
     # Completely pull overly over roller at complete remove position.
-    r.gcode('g0 x'+BKRM_POS2_X+' y'+BKRM_POS2_Y) # CHANGE TO SLOW!!!
+    r.gcode('g1 f'+DRAG_SPEED+' x'+BKRM_POS2_X+' y'+BKRM_POS2_Y) # CHANGE TO SLOW!!!
     time.sleep(DRAG_DELAY)
 
     # Retract the head system and return backing removal to rest state
@@ -94,8 +94,6 @@ def getOverlay() :
 
 
 def main() :
-    r.getSettled()                  # does this need to come before homing?
-    r.home()                        # Q: is there a way to home? Can we wrap this?
 
     getOverlay()
     while(CONTIN_MODE) :
