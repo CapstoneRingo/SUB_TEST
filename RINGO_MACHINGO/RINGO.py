@@ -78,6 +78,9 @@ class RINGO:
     def configureTinyG(self):
         self.tinyG = TinyG()
 
+        # reset machine to default values
+        self.tinyG.write('{"defa":1}')
+
         # set units to metric
         self.tinyG.write('G21')
 
@@ -129,7 +132,8 @@ class RINGO:
         self.tinyG.write('{3pm:3}')
 
     def moveX(self,posx,speed):
-        cmd = 'g1 f%f x%f \r' % (speed, posx)
+        cmd = 'g1 f%f x%f' % (speed, posx)
+        self.tinyG.write(cmd)
 
         status = False
 
@@ -146,7 +150,7 @@ class RINGO:
 
 
     def getGStatus(self,code):
-        self.tinyG.write('{sr:{stat:t}} \r')
+        self.tinyG.write('{sr:{stat:t}}')
         sr = self.tinyG.serPort.read(100)
 
         a = sr.find('\"stat\":' + str(code))
