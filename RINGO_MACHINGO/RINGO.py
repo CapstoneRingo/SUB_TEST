@@ -23,10 +23,10 @@ class RINGO:
         self.jig = OverlayPlacement(jigPin)
         self.backingRemoval = BackingRemoval(self.tinyG,backingPins)
 
-        # Function that makes sure the pneumatics and axes are in the right
-        # spots for machine operation
-        #self.getSettled()
+        self.getSettled()
 
+    # Function that makes sure the pneumatics and axes are in the right
+    # spots for machine operation
     def getSettled(self):
         # set to relative positioning, jog the y axis
         self.tinyG.write('g91')
@@ -62,7 +62,7 @@ class RINGO:
         # self.tinyG.write('{ytn:0}')
         self.checkHoming()
 
-
+    # Checks the homing
     def checkHoming(self):
         r = raw_input("HAS HOMING OPERATION BEEN COMPLETED??? (ENTER <YES> TO CONTINUE) ")
 
@@ -94,7 +94,7 @@ class RINGO:
         # Set polarity of motors
         self.tinyG.write('{2po:0}')
         self.tinyG.write('{3po:0}')
-        self.tinyG.write('{1po:1}')
+        self.tinyG.write('{1po:0}')
 
         # set travel for axes
         self.tinyG.write('{1tr:15}') # should be 1tr:15
@@ -155,3 +155,19 @@ class RINGO:
             return True
         else:
             return False
+
+    def gcode(self,cmd):
+        self.tinyG.write(cmd)
+        return
+
+    def stop(self):
+        self.gcode('!')
+        return
+
+    def resume(self):
+        self.gcode('~')
+        return
+
+    def flushGcode(self):
+        self.gcode('%')
+        return
