@@ -6,31 +6,52 @@
 #	REVISION		  :	1.0.1
 
 #	INFO
-#   This program iterates through an input tray, storing the current current 
-#   count of the PCB being used at the moment to determine which PCB to grab 
-#   next. This information is saved in a ______ file and checked every 
-#   itteration to ensure that in the event of device shutdown or restart, it 
-#   can begin from the same location that it left off. 
+#   This program iterates through an input tray, storing the current current
+#   count of the PCB being used at the moment to determine which PCB to grab
+#   next. This information is saved in a ______ file and checked every
+#   itteration to ensure that in the event of device shutdown or restart, it
+#   can begin from the same location that it left off.
 
-#   Because the process is currently openloop, it must make some assumptions 
+#   Because the process is currently openloop, it must make some assumptions
 #   about the orientation of the trays, PCB's and head. Below is a small diagram
-#   that illustrates the correct orientation of each element. s
+#   that illustrates the correct orientation of each element. Note that the
+#   starting location is noted with an 'S' and the ending location is noted with
+#   an 'E' for each tray.
+
+#          Top (closest to X - X' Motor)
+#   |---------------------------------------|
+#   |               In Tray                 |
+#   | S                                     |
+#   |---------------------------------------|
+#   |                                       |
+#   |                                     E |
+#   |---------------------------------------|
+#
+#   |---------------------------------------|
+#   |               Out Tray                |
+#   | E                                     |
+#   |---------------------------------------|
+#   |                                       |
+#   |                                     S |
+#   |---------------------------------------|
+#       Bottom (closest to control unit)
+#
+#       TRAY ORIENTATION (TOP DOWN VIEW)
 
 #   TESTS
 #   Below are enumerated tests and data that can be collected using this program
-#   1. Validation - can all the devices work together to get stuff done.
-#   2. 3 Shot Burst - setting the END_COUNT to 3, can the machine do 3
-#       consecutive removals. We can measure vacuum position variance from
-#       overlay to overlay and error in the positioning to help determine how
-#       often the head should be home'd.
-#   3. Run of 50 - THE ULTIAMTE CHALLENGE! Can this do what we think it will do
-#       for an extended period of time?
-#   4. Edge Testing - What happens when the overlay is upside down? What happens
-#       if there is not an overlay in position?
-#   5. Placement - The third position can easily be set to the location of the
-#       placement subsystem. We can test dropping multiple overlays into the
-#       jig to see if there are issues with the placement stuff without having
-#       to build and program the whole system.
+#   1. Validation - can the machine pull an overlay from a tray.
+#   2. 3 Shot Burst - setting the END_COUNT to 3, can the machine pull three
+#       PCB's consecutively from the tray?
+#   3. Pick of 50 - Pick all 50 PCB's from the input tray? We are looking for
+#       any positional error that creeps into the picking operation.
+#   4. Grab Location - How consistent is the vacuum position from PCB to PCB?
+#   5. Pick and Place - Can the machine pick an overlay up and place it directly
+#       back in the same location?
+#   6. Pick and Place Next - Can the machine pick up and overlay and place it in
+#       the next tray?
+#   7. Pick and Place 3 - same procedure as 6, but for 3 PCB's
+#   8. Pick and Place 50 - same procedure as 6, but for 50 PCB's
 
 from RINGO import *
 import time
@@ -59,50 +80,42 @@ END_COUNT = 0
 # DEFINE GLOBALS
 r = RINGO()                 # create and init Machine Object
 count = 1
+Current_Pos = 0
+
+# getCurrentPos()
+#
+#   This function retrieves the current position from the text file where an
+#   uncomplete position will be stored.
+def getCurrentPos() :
+    data = open("meta.txt","r")
+    str = data.read()
+    Current_Pos = str.split("pos:")[1]
+    data.close()
 
 
-def getOverlay() :
-    # Define and display the itteration
-    count += count
-    print("Overlays Removed = " + count)
+# resetCurrentPos()
+#
+#   This function sets the current position to zero.
+def resetCurrentPos() :
+    Current_Pos = 0
+    data = open("meta.txt","w")
+    str = "pos:" + 0
+    data.write(str)
+    data.close()
 
-    #OPTIONAL FEATURE: shut down after 'n' overlays are placed
-    if(count == END_COUNT) :
-       CONTIN_MODE = False
+# setCurrentPos()
+#
+#   This function sets the current position to the given value.
+def resetCurrentPos(newPos) :
+    Current_Pos = newPos
+    data = open("meta.txt","w")
+    str = "pos:" + newPos
+    data.write(str)
+    data.close()
 
-    # Rotate Head down and go to 'Grab overlay from stack' position
-    r.head.rotateDown()
-    r.gcode('g0 y'+str(BKRM_POS1_Y))
-    r.gcode('g0 x'+str(BKRM_POS1_X))
-    time.sleep(CRIT_DELAY)
 
-    raw_input("Continue?")
+def getPCB() :
 
-    # Head sequence required to pick up an overlay
-    r.backingRemoval.push()
-    r.head.extend()
-    r.head.grab()
-    r.backingRemoval.motorOn()
-
-    raw_input("Continue?")
-    #Pull overlay up to roller and recenter vacuum head
-
-    # Completely pull overly over roller at complete remove position.
-    r.gcode('g1 F20 x'+str(BKRM_POS2_X)) # CHANGE TO SLOW!!!
-    r.gcode('g1 F40 z'+str(BKRM_POS2_Z))
-    time.sleep(DRAG_DELAY)
-
-    # Retract the head system and return backing removal to rest state
-    r.backingRemoval.motorOff()
-    r.head.retract()
-
-    # Move to drop location.
-    r.gcode('g0 x'+str(BKRM_POS3_X))
-    time.sleep(CRIT_DELAY)
-
-    # Drop the overlay and get into joggin position.
-    r.head.drop()
-    r.head.rotateUp()
 
 
 
