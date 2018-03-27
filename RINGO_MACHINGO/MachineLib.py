@@ -1,4 +1,5 @@
 import serial
+import time
 
 # Class as a wrapper/interface for pneumatics----------------------------------
 class Pneumatic:
@@ -10,19 +11,19 @@ class Pneumatic:
 
         # Actuate OFF for starters
         self.state = 0
-        # self.actuate(1)
-        # self.actuate(0)
+        self.actuate(1)
+        self.actuate(0)
 
-        try:
-            # Write out to serial port
-            port = serial.Serial('/dev/ttyACM0',baudrate=115200,timeout=None)
-        except:
-            port = serial.Serial('/dev/ttyACM1',baudrate=115200,timeout=None)
+        # try:
+        #     # Write out to serial port
+        #     port = serial.Serial('/dev/ttyACM0',baudrate=115200,timeout=None)
+        # except:
+        #     port = serial.Serial('/dev/ttyACM1',baudrate=115200,timeout=None)
+        #
+        # port.write('gpio set ' + self.pinNo + ' \r')
+        # port.write('gpio clear ' + self.pinNo + ' \r')
 
-        port.write('gpio set ' + self.pinNo + ' \r')
-        port.write('gpio clear ' + self.pinNo + ' \r')
-
-        port.close()
+        # port.close()
 
     def actuate(self,cmd):
 
@@ -39,15 +40,17 @@ class Pneumatic:
         # Try
         try:
             # Write out to serial port
-            port = serial.Serial('/dev/ttyACM0',baudrate=115200,timeout=None)
+            port = serial.Serial('/dev/ttyACM0',baudrate=9600,timeout=None)
         except:
-            port = serial.Serial('/dev/ttyACM1',baudrate=115200,timeout=None)
+            port = serial.Serial('/dev/ttyACM1',baudrate=9600,timeout=None)
 
         port.write('gpio ' + cmd + ' ' + self.pinNo + ' \r')
 
         # Display to console
         print "Pneumatic device <%s> set to %s via %s GPIO #%s" % (self.name,
         disp, port.name, self.pinNo)
+
+        time.sleep(0.5)
 
         port.close()
 

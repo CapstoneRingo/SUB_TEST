@@ -113,7 +113,7 @@ class BackingRemoval:
         self.tinyG = tinyG
 
         # Pneumatics
-        self.pinner = Pneumatic("Pinner",str(backingPin[0]))
+        #self.pinner = Pneumatic("Pinner",str(backingPin[0]))
         self.pusher = Pneumatic("Pusher",str(backingPin[1]))
         self.motor = Pneumatic("DCMotor",str(backingPin[2]))
 
