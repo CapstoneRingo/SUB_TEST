@@ -42,7 +42,9 @@ class Pneumatic:
             # Write out to serial port
             port = serial.Serial('/dev/ttyACM0',baudrate=9600,timeout=None)
         except:
-            port = serial.Serial('/dev/ttyACM1',baudrate=9600,timeout=None)
+            time.sleep(1)
+            print "Couldn't open port /dev/ttyACM0; trying to open /dev/ttyACM0 again"
+            port = serial.Serial('/dev/ttyACM0',baudrate=9600,timeout=None)
 
         port.write('gpio ' + cmd + ' ' + self.pinNo + ' \r')
 
@@ -50,9 +52,10 @@ class Pneumatic:
         print "Pneumatic device <%s> set to %s via %s GPIO #%s" % (self.name,
         disp, port.name, self.pinNo)
 
-        time.sleep(0.5)
+        # time.sleep(0.25)
 
         port.close()
+        time.sleep(0.1)
 
         return
 
@@ -67,9 +70,9 @@ class Position:
 class TinyG:
 
     def __init__(self):
-
+        pass
         # Configure serial port
-        self.configurePort()
+        #self.configurePort()
 
         # Setup axes
         #self.configGantry()
@@ -85,12 +88,21 @@ class TinyG:
         print "TinyG using port " + self.serPort.name
 
     def write(self,cmd):
+        # try:
+        #
+        #     self.serPort.write(cmd + " \r")
+        #
+        # except:
+        #     print "TinyG write failed!!!"
         try:
-
-            self.serPort.write(cmd + " \r")
-
+            port = serial.Serial('/dev/ttyUSB0',baudrate=115200,timeout=0)
         except:
-            print "TinyG write failed!!!"
+            port = serial.Serial('/dev/ttyUSB1',baudrate=115200,timeout=0)
+
+        port.write(cmd + " \r")
+        print "TinyG wrote out %s via %s" % (cmd, port.name)
+        port.close()
+        time.sleep(0.1)
 
 # Class for PCB---------------------------------------------------------------
 class Touchpad:
