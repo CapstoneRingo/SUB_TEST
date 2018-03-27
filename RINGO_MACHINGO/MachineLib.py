@@ -43,7 +43,7 @@ class Pneumatic:
             port = serial.Serial('/dev/ttyACM0',baudrate=9600,timeout=None)
         except:
             time.sleep(1)
-            print "Couldn't open port /dev/ttyACM0; trying to open /dev/ttyACM0 again"
+            print "*******Couldn't open port /dev/ttyACM0; trying to open /dev/ttyACM0 again"
             port = serial.Serial('/dev/ttyACM0',baudrate=9600,timeout=None)
 
         port.write('gpio ' + cmd + ' ' + self.pinNo + ' \r')
@@ -88,15 +88,11 @@ class TinyG:
         print "TinyG using port " + self.serPort.name
 
     def write(self,cmd):
-        # try:
-        #
-        #     self.serPort.write(cmd + " \r")
-        #
-        # except:
-        #     print "TinyG write failed!!!"
+
         try:
             port = serial.Serial('/dev/ttyUSB0',baudrate=115200,timeout=0)
         except:
+            print "###Couldn't open /dev/ttyUSB0; trying /dev/ttyUSB1"
             port = serial.Serial('/dev/ttyUSB1',baudrate=115200,timeout=0)
 
         port.write(cmd + " \r")
