@@ -22,6 +22,11 @@ for i in range(X):
     outFile.write(endStr + ' \n')
     # send to x100 y220
     r.gcode('g0 x100 y220')
+    time.sleep(8)
+    r.head.extend()
+    r.head.rotateDown()
+    r.head.rollerDown()
+    r.jig.extend()
     # write out to file
 
 

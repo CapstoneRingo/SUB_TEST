@@ -41,9 +41,10 @@ class Pneumatic:
         print "Pneumatic device <%s> set to %s via %s GPIO #%s" % (self.name,
         disp, port.name, self.pinNo)
 
-        # time.sleep(0.25)
+        time.sleep(0.1)
 
         port.close()
+
         time.sleep(0.1)
 
         return
@@ -87,7 +88,7 @@ class TinyG:
         port.write(cmd + " \r")
         print "TinyG wrote out %s via %s" % (cmd, port.name)
         port.close()
-        time.sleep(0.1)
+        time.sleep(0.2)
 
 # Class for PCB---------------------------------------------------------------
 class Touchpad:
