@@ -14,17 +14,6 @@ class Pneumatic:
         self.actuate(1)
         self.actuate(0)
 
-        # try:
-        #     # Write out to serial port
-        #     port = serial.Serial('/dev/ttyACM0',baudrate=115200,timeout=None)
-        # except:
-        #     port = serial.Serial('/dev/ttyACM1',baudrate=115200,timeout=None)
-        #
-        # port.write('gpio set ' + self.pinNo + ' \r')
-        # port.write('gpio clear ' + self.pinNo + ' \r')
-
-        # port.close()
-
     def actuate(self,cmd):
 
         # On/Off command
