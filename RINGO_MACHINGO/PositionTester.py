@@ -8,6 +8,7 @@ r = RINGO()
 x_position = 0
 y_position = 0
 
+r.head.rotateDown()
 # Tray Location Estimation
 while(True) :
     print("\n****************************\nINPUT\nEnter 'nope' for no change")
@@ -20,7 +21,7 @@ while(True) :
     if(x_next != 'nope') :
         x_position = x_next
 
-    r.TinyG.write('g1 F800 y' + str(y_position))
+    r.tinyG.write('g0 y' + str(y_position))
     time.sleep(CRIT_DELAY)
-    r.TinyG.write('g0 x' + str(x_position))
+    r.tinyG.write('g0 x' + str(x_position))
     time.sleep(CRIT_DELAY)

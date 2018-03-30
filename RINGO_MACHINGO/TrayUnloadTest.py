@@ -57,39 +57,40 @@ from RINGO import *
 import time
 
 # DEFINE CONSTANTS
-BKRM_POS1_X = 377           # mm - position of first vacuum contact
-BKRM_POS2_X = 365           # mm - position to create initial peel
-BKRM_POS3_X = 355           # mm - position to completely remove backing
-DROP_POS_X  = 250           # mm - position of backing drop
+TRAY_POS1_X = 585           # mm - position of OUT start
+TRAY_POS2_X = 670           # mm - position to OUT end
+TRAY_POS3_X = 785           # mm - position to IN end
+TRAY_POS4_X = 890           # mm - poistion to IN start
+DROP_POS_X  = 333           # mm - position of PCB drop
 
-BKRM_POS1_Y = 430           # mm - position of first vacuum contact
-DROP_POS_Y  = 250           # mm - position of backing drop
+TRAY_POS1_Y =  54           # mm - position of first vacuum contact
+DROP_POS_Y  = 198           # mm - position of backing drop
+Y_OFFSET    =   8.5         # gain - offset multiplier to calculate position
 
-BKRM_POS1_Z = 35            # mm - position of roller at first overlay contact
-BKRM_POS1_Z = 10            # mm - drop of roller to create initial peel
-BKRM_POS1_Z = 15            # mm - drop of roller to release backing paper
+CRIT_DELAY = 7              # seconds - maximium travel time delay
 
-CRIT_DELAY = 10             # seconds - maximium travel time delay
-DRAG_DELAY = 5              # seconds - delay required to remove backing
+Y_SPEED = 800               # mm / min - speed gantry when removing
 
-DRAG_SPEED =                # mm / min - speed gantry when removing
-
-CONTIN_MODE = False
-END_COUNT = 0
+CONTIN_MODE = True
+DROP_MODE = True            # 1 - drop at location | 0 - drop in out tray
+COMPLETE_FLAG = False       # flag to indicate that all PCB's in output Tray
+END_COUNT = 5
 
 # DEFINE GLOBALS
 r = RINGO()                 # create and init Machine Object
-count = 1
-Current_Pos = 0
+count = 0
+currPos = 0
 
 # getCurrentPos()
 #
 #   This function retrieves the current position from the text file where an
 #   uncomplete position will be stored.
 def getCurrentPos() :
+    global currPos
+
     data = open("meta.txt","r")
     str = data.read()
-    Current_Pos = str.split("pos:")[1]
+    currPos = str.split("pos:")[1]
     data.close()
 
 
@@ -97,7 +98,9 @@ def getCurrentPos() :
 #
 #   This function sets the current position to zero.
 def resetCurrentPos() :
-    Current_Pos = 0
+    global currPos
+
+    currPos = 0
     data = open("meta.txt","w")
     str = "pos:" + 0
     data.write(str)
@@ -107,25 +110,138 @@ def resetCurrentPos() :
 #
 #   This function sets the current position to the given value.
 def resetCurrentPos(newPos) :
-    Current_Pos = newPos
+    global currPos
+
+    currPos = newPos
     data = open("meta.txt","w")
     str = "pos:" + newPos
     data.write(str)
     data.close()
 
+# getXPosIn()
+#
+#   This function calculates and returns the correct X position of the Input
+def getXPosIn() :
+    global currPos
+    global TRAY_POS4_X
+    global TRAY_POS3_X
 
+    if(currPos < 25) :
+        return TRAY_POS4_X
+    else :
+        return TRAY_POS3_X
+
+# getXPosOut()
+#
+#   This function calculates and returns the correct X position of the Output
+def getXPosOut() :
+    global DROP_MODE
+    global DROP_POS_X
+    global currPos
+    global TRAY_POS1_X
+    global TRAY_POS2_X
+
+    if(DROP_MODE) :
+        return DROP_POS_X
+    else :
+        if(currPos < 25) :
+            return TRAY_POS1_X
+        else :
+            return TRAY_POS2_X
+
+# getYPosIn()
+#
+#   This function calculate and returns the correct Y position of the Input
+def getYPosIn() :
+    global currPos
+    global TRAY_POS1_Y
+    global Y_OFFSET
+
+    trayPos = TRAY_POS1_Y + ((currPos % 25) * Y_OFFSET)
+    currPos += 1
+
+    return trayPos
+
+
+# getYPosOut()
+#
+#   This function calculate and returns the correct Y position of the Output
+def getYPosOut() :
+    global DROP_MODE
+    global DROP_POS_Y
+    global currPos
+
+    if(DROP_MODE) :
+        return DROP_POS_Y
+    else :
+        return TRAY_POS1_Y + (((49 - currPos) % 25) * Y_OFFSET)
+
+
+# getPCB()
+#
+#   This function manages all the movements and actions required to get the
+#   next PCB.
 def getPCB() :
+    global CONTIN_MODE
+    global count
+    global END_COUNT
+    global r
 
+    # Update the continuous mode
+    if(CONTIN_MODE and count == END_COUNT) :
+        CONTIN_MODE = False
+
+    x_pos = getXPosIn()
+    y_pos = getYPosIn()
+    x_pos_out = getXPosOut()
+    y_pos_out = getYPosOut()
+
+    print("X Position: ",x_pos)
+    print("Y Position: ",y_pos)
+    print("X Position Out: ",x_pos_out)
+    print("Y Position Out: ",y_pos_out)
+
+    print("Knight to A4!")
+
+    # Move to pickup location, grab durring movement
+    r.tinyG.write('g0 x' + str(x_pos))
+    time.sleep(CRIT_DELAY)
+    r.tinyG.write('g1 F800 y' + str(y_pos))
+    r.head.extend()
+    time.sleep(5 + ((currPos % 25)) / 2)
+    r.head.grab()
+    time.sleep(2)
+
+    # Move to drop location - drop PCB
+    r.head.retract()
+    r.tinyG.write('g0 y' + str(0))
+    time.sleep(3)
+    r.head.rotateDown()
+    r.tinyG.write('g0 x' + str(x_pos_out))
+    time.sleep(CRIT_DELAY)
+    r.tinyG.write('g0 y' + str(y_pos_out))
+    time.sleep(4)
+    r.head.drop()
+    r.head.rotateUp()
+
+    # Return to HOME
+    r.tinyG.write('g0 y' + str(1))
+    r.tinyG.write('g0 x' + str(1))
+    time.sleep(CRIT_DELAY + 5)
 
 
 
 def main() :
-    #SPENCER: Pretty sure these are done when r = RINGO() is created
-    #r.getSettled()                  # does this need to come before homing?
-    #r.home()                        # Q: is there a way to home? Can we wrap this?
+    global CONTIN_MODE
 
-    getOverlay()
+    getPCB()
     while(CONTIN_MODE) :
-        getOverlay()
+        #response = raw_input("Run Again? (enter 'y') : ")
+        #if response == 'y' :
+        #    getPCB()
+        #else :
+        #    CONTIN_MODE = False
+        getPCB()
 
+    print("TrayUnloadTest is complete")
 main()
