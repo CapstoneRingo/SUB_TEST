@@ -43,8 +43,10 @@ class RINGO:
         print "Making sure head and jig are in correct position for homing"
 
         #self.head.extend()
-        self.head.retract()
-        time.sleep(0.02)
+        curtime = time.time()
+        while (time.time() - curtime < 10):
+            self.head.retract()
+            time.sleep(0.02)
         # time.sleep(0.5)
         self.head.rollerUp()
         # time.sleep(0.5)
