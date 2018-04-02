@@ -37,16 +37,23 @@ class RINGO:
         self.tinyG.write('g0 y-1')
 
         # Seems to be necessary
-        time.sleep(3)
+        #time.sleep(3)
 
         # put pneumatics into initial start positions
         print "Making sure head and jig are in correct position for homing"
-        self.head.extend()
+        #self.head.extend()
         self.head.retract()
+        # time.sleep(0.5)
         self.head.rollerUp()
+        # time.sleep(0.5)
         self.head.rotateUp()
+        # time.sleep(0.5)
         self.jig.retract()
-
+        # time.sleep(0.5)
+        self.head.drop()
+        # time.sleep(0.5)
+        self.backingRemoval.motorOff()
+        # time.sleep(0.5)
         # set back to absolute(global) positioning
         self.tinyG.write('g90')
 
