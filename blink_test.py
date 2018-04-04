@@ -37,7 +37,7 @@ GPIO_14 = 'E'
 GPIO_15 = 'F'
 
 
-USB_PORT = "/dev/ttyACM1"
+USB_PORT = "/dev/ttyACM0"
 DRIVER_PORT = "/dev/ttyUSB0"
 
 print" ... welcome to VIRUS CITY!!!!"
@@ -82,9 +82,9 @@ def fun_seq():
 	#setHigh(GPIO_7)
 	time.sleep(1)
 
-	driverPort.write("G0 Y10 \r")
+	#driverPort.write("G0 Y10 \r")
 	time.sleep(1)
-	driverPort.write("G0 Y-10 \r")
+	#driverPort.write("G0 Y-10 \r")
 	time.sleep(1)
 
 	setLow(GPIO_0)

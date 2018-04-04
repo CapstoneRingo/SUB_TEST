@@ -29,11 +29,11 @@ class Pneumatic:
         # Try
         try:
             # Write out to serial port
-            port = serial.Serial('/dev/ttyACM0',baudrate=9600,timeout=None)
+            port = serial.Serial('/dev/ttyACM0',baudrate=115200,timeout=None)
         except:
             time.sleep(4)
             print "*******Couldn't open port /dev/ttyACM0; trying to open /dev/ttyACM0 again"
-            port = serial.Serial('/dev/ttyACM0',baudrate=9600,timeout=None)
+            port = serial.Serial('/dev/ttyACM0',baudrate=115200,timeout=None)
 
         port.write('gpio ' + cmd + ' ' + self.pinNo + ' \r')
 

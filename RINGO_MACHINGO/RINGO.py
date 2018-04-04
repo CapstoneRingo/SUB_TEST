@@ -41,8 +41,10 @@ class RINGO:
 
         # put pneumatics into initial start positions
         print "Making sure head and jig are in correct position for homing"
+
         #self.head.extend()
         self.head.retract()
+        time.sleep(0.02)
         # time.sleep(0.5)
         self.head.rollerUp()
         # time.sleep(0.5)
