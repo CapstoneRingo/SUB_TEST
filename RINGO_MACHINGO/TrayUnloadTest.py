@@ -61,17 +61,17 @@ TRAY_POS1_X = 585           # mm - position of OUT start
 TRAY_POS2_X = 670           # mm - position to OUT end
 TRAY_POS3_X = 785           # mm - position to IN end
 TRAY_POS4_X = 890           # mm - poistion to IN start
-DROP_POS_X  = 333           # mm - position of PCB drop
+DROP_POS_X  = 350           # mm - position of PCB drop
 
 TRAY_POS1_Y =  54           # mm - position of first vacuum contact
-DROP_POS_Y  = 198           # mm - position of backing drop
+DROP_POS_Y  = 178           # mm - position of backing drop
 Y_OFFSET    =   8.5         # gain - offset multiplier to calculate position
 
 CRIT_DELAY = 7              # seconds - maximium travel time delay
 
 Y_SPEED = 800               # mm / min - speed gantry when removing
 
-CONTIN_MODE = True
+CONTIN_MODE = False
 DROP_MODE = True            # 1 - drop at location | 0 - drop in out tray
 COMPLETE_FLAG = False       # flag to indicate that all PCB's in output Tray
 END_COUNT = 5
@@ -210,7 +210,7 @@ def getPCB() :
     r.head.extend()
     time.sleep(5 + ((currPos % 25)) / 2)
     r.head.grab()
-    time.sleep(2)
+    time.sleep(0.5)
 
     # Move to drop location - drop PCB
     r.head.retract()
@@ -224,10 +224,22 @@ def getPCB() :
     r.head.drop()
     r.head.rotateUp()
 
+    # Extend the Roller
+    r.head.rollerDown()
+    r.jig.extend()
+    time.sleep(1)
+    r.tinyG.write('g0 y' + str(y_pos_out - 25))
+    time.sleep(2)
+    r.tinyG.write('g0 x' + str(x_pos_out + 150))
+    time.sleep(4)
+    r.head.rollerUp()
+
     # Return to HOME
     r.tinyG.write('g0 y' + str(1))
+    time.sleep(2)
     r.tinyG.write('g0 x' + str(1))
     time.sleep(CRIT_DELAY + 5)
+
 
 
 
