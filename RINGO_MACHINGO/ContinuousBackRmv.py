@@ -1,9 +1,9 @@
-#	FILE NAME 		:	ContinuousBackRmv.py
+cd #	FILE NAME 		:	ContinuousBackRmv.py
 #	AUTHOR 			: 	Nolan McCulloch
 # 	CONTRIBUTORS	: 	Caleb Groves, Spencer Diehl
 #	DATE CREATED	:	23 MAR 2018
 #	PYTHON VER		:	2.7
-#	REVISION		:	1.0.1
+#	REVISION		:	1.0.2
 
 #	INFO
 #   This programm simply homes the gantry axis system and then moves to the
@@ -30,21 +30,21 @@
 #       jig to see if there are issues with the placement stuff without having
 #       to build and program the whole system.
 
-from RINGO import *
 import time
 
 # DEFINE CONSTANTS
-BKRM_POS1_X = 377           # mm - position of first vacuum contact
-BKRM_POS2_X = 365           # mm - position to create initial peel
-BKRM_POS3_X = 355           # mm - position to completely remove backing
-DROP_POS_X  = 250           # mm - position of backing drop
+BKRM_X0 = 368           # mm - position of first vacuum contact
+BKRM_DELX_1 = 2         # mm - position to create initial peel
+BKRM_DELX_2 = 5         # mm - position to completely remove backing
+DROP_DELX_3  = 12       # mm - position of backing drop
 
-BKRM_POS1_Y = 430           # mm - position of first vacuum contact
-DROP_POS_Y  = 250           # mm - position of backing drop
+BKRM_Z0 = 30            # mm - position of roller at first overlay contact
+BKRM_DELZ_1 = 2         # mm - drop of roller to create initial peel
+BKRM_DELZ_2 = 5         # mm - drop of roller to release backing paper
+BKRM_DELZ_2 = 7         # mm - drop of roller to release backing paper
+BKRM_ZFINAL = 10        # mm - drop of roller to release backing paper
 
-BKRM_POS1_Z = 35            # mm - position of roller at first overlay contact
-BKRM_POS1_Z = 10            # mm - drop of roller to create initial peel
-BKRM_POS1_Z = 15            # mm - drop of roller to release backing paper
+BKRM_POS_Y = 428            # mm - centered with overlay
 
 CRIT_DELAY = 10             # seconds - maximium travel time delay
 DRAG_DELAY = 5              # seconds - delay required to remove backing
@@ -55,7 +55,6 @@ CONTIN_MODE = False
 END_COUNT = 0
 
 # DEFINE GLOBALS
-r = RINGO()                 # create and init Machine Object
 count = 1
 
 
@@ -105,9 +104,6 @@ def getOverlay() :
 
 
 def main() :
-    #SPENCER: Pretty sure these are done when r = RINGO() is created
-    #r.getSettled()                  # does this need to come before homing?
-    #r.home()                        # Q: is there a way to home? Can we wrap this?
 
     getOverlay()
     while(CONTIN_MODE) :
