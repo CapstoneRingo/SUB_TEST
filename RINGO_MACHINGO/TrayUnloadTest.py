@@ -21,18 +21,18 @@
 #          Top (closest to X - X' Motor)
 #   |---------------------------------------|
 #   |               In Tray                 |
-#   | S                                     |
+#   |                                     E |
 #   |---------------------------------------|
 #   |                                       |
-#   |                                     E |
+#   | S                                     |
 #   |---------------------------------------|
 #
 #   |---------------------------------------|
 #   |               Out Tray                |
-#   | E                                     |
+#   |                                     S |
 #   |---------------------------------------|
 #   |                                       |
-#   |                                     S |
+#   | E                                     |
 #   |---------------------------------------|
 #       Bottom (closest to control unit)
 #
@@ -53,31 +53,50 @@
 #   7. Pick and Place 3 - same procedure as 6, but for 3 PCB's
 #   8. Pick and Place 50 - same procedure as 6, but for 50 PCB's
 
+# BUGS TO FIX
+#   1. Position offset needs tuning for each position.
+#       RESULTS -- >
+#        TEST 1
+#           offset = 8.7
+#           correct placement = 36%
+#           still in input = 0
+
+#        TEST 2
+#           offset = 8.16
+#           correct placement = 60%
+#           still in input = 2
+#   2. Tray positioning blocks need to be square, Tray 2 is currently on an
+#       angle.
+#  x  3. Last placement is off. (tries to place the last PCB in the final spot)
+#  x  4. Exit case is wrong. should stop one before.
+
 from RINGO import *
 import time
 
 # DEFINE CONSTANTS
-TRAY_POS1_X = 585           # mm - position of OUT start
-TRAY_POS2_X = 670           # mm - position to OUT end
-TRAY_POS3_X = 785           # mm - position to IN end
-TRAY_POS4_X = 890           # mm - poistion to IN start
-DROP_POS_X  = 350           # mm - position of PCB drop
+TRAY_POS1_X = 560.0         # mm - position of OUT end
+TRAY_POS2_X = 647.7         # mm - position to OUT start
+TRAY_POS3_X = 783.0         # mm - position to IN start
+TRAY_POS4_X = 871.0         # mm - poistion to IN end
 
-TRAY_POS1_Y =  54           # mm - position of first vacuum contact
-DROP_POS_Y  = 178           # mm - position of backing drop
-Y_OFFSET    =   8.5         # gain - offset multiplier to calculate position
+TRAY_POS1_Y =  49.5         # mm - position of first vacuum contact
+TRAY_POS2_Y = 253.0         # mm - position of last vacuum contact
+
+Y_OFFSET    =   8.44        # gain - offset multiplier to calculate position
+
+DROP_POS_X  = 334.0         # mm - position of PCB drop
+DROP_POS_Y  = 183.0         # mm - position of backing drop
+
+JOG_POS_Y   =   5.0         # mm - y Position of Jog Position
 
 CRIT_DELAY = 7              # seconds - maximium travel time delay
 
-Y_SPEED = 800               # mm / min - speed gantry when removing
-
-CONTIN_MODE = False
-DROP_MODE = True            # 1 - drop at location | 0 - drop in out tray
+CONTIN_MODE = True
 COMPLETE_FLAG = False       # flag to indicate that all PCB's in output Tray
 END_COUNT = 5
 
 # DEFINE GLOBALS
-r = RINGO()                 # create and init Machine Object
+#r = RINGO()                 # create and init Machine Object
 count = 0
 currPos = 0
 
@@ -127,27 +146,22 @@ def getXPosIn() :
     global TRAY_POS3_X
 
     if(currPos < 25) :
-        return TRAY_POS4_X
-    else :
         return TRAY_POS3_X
+    else :
+        return TRAY_POS4_X
 
 # getXPosOut()
 #
 #   This function calculates and returns the correct X position of the Output
 def getXPosOut() :
-    global DROP_MODE
-    global DROP_POS_X
     global currPos
     global TRAY_POS1_X
     global TRAY_POS2_X
 
-    if(DROP_MODE) :
-        return DROP_POS_X
+    if(currPos < 25) :
+        return TRAY_POS2_X
     else :
-        if(currPos < 25) :
-            return TRAY_POS1_X
-        else :
-            return TRAY_POS2_X
+        return TRAY_POS1_X
 
 # getYPosIn()
 #
@@ -157,8 +171,7 @@ def getYPosIn() :
     global TRAY_POS1_Y
     global Y_OFFSET
 
-    trayPos = TRAY_POS1_Y + ((currPos % 25) * Y_OFFSET)
-    currPos += 1
+    trayPos = TRAY_POS1_Y + ((currPos % 25.0) * Y_OFFSET)
 
     return trayPos
 
@@ -167,14 +180,60 @@ def getYPosIn() :
 #
 #   This function calculate and returns the correct Y position of the Output
 def getYPosOut() :
-    global DROP_MODE
-    global DROP_POS_Y
     global currPos
+    global Y_OFFSET
+    global TRAY_POS2_Y
 
-    if(DROP_MODE) :
-        return DROP_POS_Y
-    else :
-        return TRAY_POS1_Y + (((49 - currPos) % 25) * Y_OFFSET)
+    trayPos_out = TRAY_POS2_Y - ((currPos % 25.0) * Y_OFFSET)
+    currPos += 1
+    return trayPos_out
+
+# setInOutput
+#
+# This function takes the two output positions and writes to them.
+def setInOutput(x_pos_out, y_pos_out) :
+    global r
+
+    r.tinyG.write('g0 x' + str(x_pos_out))
+    time.sleep(5)
+    r.tinyG.write('g0 y' + str(y_pos_out))
+    time.sleep(4)
+    r.head.extend()
+    time.sleep(0.5)
+    r.tinyG.write('g0 y' + str(JOG_POS_Y))
+    r.head.drop()
+    time.sleep(4)
+
+def dropAndRoll() :
+
+    # Move to drop location - drop PCB
+    r.head.retract()
+    r.tinyG.write('g0 y' + str(0))
+    time.sleep(4)
+    r.head.rotateDown()
+    r.tinyG.write('g0 x' + str(x_pos_out))
+    time.sleep(5)
+    r.tinyG.write('g0 y' + str(y_pos_out))
+    time.sleep(4)
+    r.head.drop()
+    r.head.rotateUp()
+
+    # Extend the Roller
+    r.head.rollerDown()
+    r.jig.extend()
+    time.sleep(1)
+    r.tinyG.write('g0 y' + str(y_pos_out - 30))
+    time.sleep(2)
+    r.tinyG.write('g0 x' + str(x_pos_out + 150))
+    time.sleep(4)
+    r.head.rollerUp()
+
+    # Return to HOME
+    r.tinyG.write('g0 y' + str(1))
+    time.sleep(2)
+    r.tinyG.write('g0 x' + str(1))
+    r.jig.retract()
+    time.sleep(CRIT_DELAY + 5)
 
 
 # getPCB()
@@ -196,64 +255,40 @@ def getPCB() :
     x_pos_out = getXPosOut()
     y_pos_out = getYPosOut()
 
-    print("X Position: ",x_pos)
-    print("Y Position: ",y_pos)
-    print("X Position Out: ",x_pos_out)
-    print("Y Position Out: ",y_pos_out)
+    print("GET --> X Position: ",x_pos,"\t Y Position: ",y_pos)
+    print("SET --> X Position: ",x_pos_out,"\t Y Position: ",y_pos_out)
 
     print("Knight to A4!")
 
     # Move to pickup location, grab durring movement
     r.tinyG.write('g0 x' + str(x_pos))
-    time.sleep(CRIT_DELAY)
-    r.tinyG.write('g1 F800 y' + str(y_pos))
+    time.sleep(5)
+    r.tinyG.write('g0 y' + str(y_pos))
     r.head.extend()
-    time.sleep(5 + ((currPos % 25)) / 2)
+    time.sleep(4)
     r.head.grab()
     time.sleep(0.5)
-
-    # Move to drop location - drop PCB
     r.head.retract()
-    r.tinyG.write('g0 y' + str(0))
-    time.sleep(3)
-    r.head.rotateDown()
-    r.tinyG.write('g0 x' + str(x_pos_out))
-    time.sleep(CRIT_DELAY)
-    r.tinyG.write('g0 y' + str(y_pos_out))
+    r.tinyG.write('g0 y40')
     time.sleep(4)
-    r.head.drop()
-    r.head.rotateUp()
-
-    # Extend the Roller
-    r.head.rollerDown()
-    r.jig.extend()
-    time.sleep(1)
-    r.tinyG.write('g0 y' + str(y_pos_out - 25))
-    time.sleep(2)
-    r.tinyG.write('g0 x' + str(x_pos_out + 150))
-    time.sleep(4)
-    r.head.rollerUp()
-
-    # Return to HOME
-    r.tinyG.write('g0 y' + str(1))
-    time.sleep(2)
-    r.tinyG.write('g0 x' + str(1))
-    time.sleep(CRIT_DELAY + 5)
 
 
+    setInOutput(x_pos_out, y_pos_out)
 
+    # dropAndRoll()
 
 def main() :
     global CONTIN_MODE
+    global currPos
 
     getPCB()
     while(CONTIN_MODE) :
-        #response = raw_input("Run Again? (enter 'y') : ")
-        #if response == 'y' :
-        #    getPCB()
-        #else :
-        #    CONTIN_MODE = False
-        getPCB()
+        print('CURRENT POSITION : ',currPos)
+        # response = raw_input("Run Again? (enter 'y') : ")
+        if currPos < 51 :
+            getPCB()
+        else :
+            CONTIN_MODE = False
 
     print("TrayUnloadTest is complete")
 main()

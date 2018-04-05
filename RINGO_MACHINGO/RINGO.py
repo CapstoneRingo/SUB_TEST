@@ -19,11 +19,11 @@ class RINGO:
         jigPin = 7
         backingPins = [6,5,0]
 
-        print "Initializing head for first time"
+        # print "Initializing head for first time"
         self.head = Head(self.tinyG,headPins)
-        print "Initializing jig for first time"
+        # print "Initializing jig for first time"
         self.jig = OverlayPlacement(jigPin)
-        print "Initializing backing removal for first time"
+        # print "Initializing backing removal for first time"
         self.backingRemoval = BackingRemoval(self.tinyG,backingPins)
 
         self.getSettled()
@@ -40,7 +40,7 @@ class RINGO:
         #time.sleep(3)
 
         # put pneumatics into initial start positions
-        print "Making sure head and jig are in correct position for homing"
+        # print "Making sure head and jig are in correct position for homing"
 
         #self.head.extend()
         self.head.retract()
@@ -80,9 +80,9 @@ class RINGO:
         r = raw_input("HAS HOMING OPERATION BEEN COMPLETED??? (ENTER <YES> TO CONTINUE) ")
 
         if r == "<YES>":
-            print "HOMING STATED TO BE COMPLETE"
+            # print "HOMING STATED TO BE COMPLETE"
         else:
-            print "NOT A VALID CONFIRMATION FOR HOMING COMPLETION"
+            # print "NOT A VALID CONFIRMATION FOR HOMING COMPLETION"
             self.checkHoming()
 
     def readConfigFile(self):
@@ -128,17 +128,17 @@ class RINGO:
         self.tinyG.write('G90') # absolute positioning
 
         # Set axis speeds (mm/min)
-        self.tinyG.write('{xsv:800}') # max homing speed (mm/min)
+        self.tinyG.write('{xsv:1000}') # max homing speed (mm/min)
         self.tinyG.write('{xvm:10000}') # set max x fast travel velocity
         self.tinyG.write('{xfr:10000}') # set max x feed velocity
-        self.tinyG.write('{xtm:1000}') # set maximum x travel (for now)
+        self.tinyG.write('{xtm:10000}') # set maximum x travel (for now)
         self.tinyG.write('{xtn:-1000}') # set minimum x travel (for now)
 
 
-        self.tinyG.write('{ysv:800}')
+        self.tinyG.write('{ysv:1000}')
         self.tinyG.write('{yvm:10000}')
         self.tinyG.write('{yfr:10000}')
-        self.tinyG.write('{ytm:1000}')
+        self.tinyG.write('{ytm:10000}')
         self.tinyG.write('{ytn:-1000}')
 
         # Homing settings
@@ -157,12 +157,12 @@ class RINGO:
         while (not self.getGStatus(5)):
             status = self.getGStatus(5)
 
-        print "Machine is moving"
+        # print "Machine is moving"
 
         while (not self.getGStatus(3)):
             status = self.getGStatus(3)
 
-        print "Move completed!"
+        # print "Move completed!"
         return
 
 
