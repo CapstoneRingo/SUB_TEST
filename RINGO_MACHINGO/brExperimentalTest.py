@@ -19,11 +19,11 @@ x0 = 367
 delx1 = 1.0
 delz1 = 2.0
 
-delx2 = 3.0
-delz2 = 7
+delx2 = 3.4 #3
+delz2 = 6.4
 
-delx3 = 5.0
-delz3 = 8.0
+delx3 = 4.5 #6
+delz3 = 8.4
 
 
 #Get into initial position
@@ -41,14 +41,14 @@ r.tinyG.write('g0 x'+str(x0))
 r.tinyG.write('g0 z'+str(z0))
 
 #Start peel
-answer = raw_input('Start Peel?')
+answer = '1'#raw_input('Start Peel?')
 
 if answer == '1':
     for i in range(2):
-        r.tinyG.write('g1 f40 x'+str(x0-delx1)+' z'+str(z0-delz1))
+        r.tinyG.write('g1 f80 x'+str(x0-delx1)+' z'+str(z0-delz1))
         time.sleep(0.5)
-        r.tinyG.write('g1 f80 x'+str(x0-delx2)+' z'+str(z0-delz2))
-        r.tinyG.write('g1 f80 x'+str(x0-delx3)+' z'+str(z0-delz3))
+        r.tinyG.write('g1 f160 x'+str(x0-delx2)+' z'+str(z0-delz2))
+        r.tinyG.write('g1 f160 x'+str(x0-delx3)+' z'+str(z0-delz3))
         if i < 1:
             r.tinyG.write('g0 x'+str(x0))
             r.tinyG.write('g0 z'+str(z0))
@@ -57,18 +57,19 @@ answer = raw_input('Peel Successful?')
 time.sleep(1)
 if answer == '1':
     #Pull overlay over knife
-    r.tinyG.write('g1 f200 x300')
-    r.tinyG.write('g0 x200')
-    time.sleep(15)
+    r.tinyG.write('g1 f200 x330')
+    #r.tinyG.write('g1 f400 x300')
+    r.tinyG.write('g0 x230')
+    time.sleep(12)
     r.head.retract()
-    r.tinyG.write('g0 y165')
-    r.tinyG.write('g0 x314')
+    r.tinyG.write('g0 x314 y165')
     raw_input('Take Picture?')
     r.head.drop()
 
 elif answer == '0':
     r.tinyG.write('g0 x'+str(x0))
     r.tinyG.write('g0 z'+str(z0))
+    r.tinyG.write('g28.2 z0')
     time.sleep(3)
     r.head.drop()
     r.head.retract()

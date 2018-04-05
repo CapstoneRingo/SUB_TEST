@@ -68,7 +68,7 @@ class RINGO:
             return
 
         # Home the tinyG
-        self.tinyG.write('g28.2 x0 g28.2 y0')
+        self.tinyG.write('g28.2 x0 y0 z0')
         # self.tinyG.write('{xtm:1000}') # max travel
         # self.tinyG.write('{xtn:0}') # infinite axis
         # self.tinyG.write('{ytm:470}')
@@ -103,9 +103,9 @@ class RINGO:
         self.tinyG.write('{3sa:1.8}')
 
         # Set microstepping
-        self.tinyG.write('{1mi:8}')
-        self.tinyG.write('{2mi:8}')
-        self.tinyG.write('{3mi:8}')
+        self.tinyG.write('{1mi:2}')
+        self.tinyG.write('{2mi:2}')
+        self.tinyG.write('{3mi:2}')
 
         # Set polarity of motors
         self.tinyG.write('{2po:0}')
@@ -128,22 +128,25 @@ class RINGO:
         self.tinyG.write('G90') # absolute positioning
 
         # Set axis speeds (mm/min)
-        self.tinyG.write('{xsv:800}') # max homing speed (mm/min)
+        self.tinyG.write('{xsv:1000}') # max homing speed (mm/min)
         self.tinyG.write('{xvm:10000}') # set max x fast travel velocity
         self.tinyG.write('{xfr:10000}') # set max x feed velocity
         self.tinyG.write('{xtm:1000}') # set maximum x travel (for now)
         self.tinyG.write('{xtn:-1000}') # set minimum x travel (for now)
 
-
-        self.tinyG.write('{ysv:800}')
-        self.tinyG.write('{yvm:10000}')
+        self.tinyG.write('{ysv:1000}')
+        self.tinyG.write('{yvm:15000}')
         self.tinyG.write('{yfr:10000}')
         self.tinyG.write('{ytm:1000}')
         self.tinyG.write('{ytn:-1000}')
 
+        #Set Axis Acceleration
+        self.tinyG.write('{xjm:65}')
+        self.tinyG.write('{yjm:40}')
+
         # Homing settings
-        self.tinyG.write('{xlb:10}') # backoff from limit distance
-        self.tinyG.write('{ylb:10}')
+        self.tinyG.write('{xlb:5}') # backoff from limit distance
+        self.tinyG.write('{ylb:5}')
 
         # Power settings
         self.tinyG.write('{3pm:3}') # only power z axis when moving
