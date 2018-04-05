@@ -33,7 +33,8 @@ cd #	FILE NAME 		:	ContinuousBackRmv.py
 import time
 
 # DEFINE CONSTANTS
-BKRM_X0 = 368           # mm - position of first vacuum contact
+Grab = 377
+BKRM_X0 = 367           # mm - position of first vacuum contact
 BKRM_DELX_1 = 2         # mm - position to create initial peel
 BKRM_DELX_2 = 5         # mm - position to completely remove backing
 DROP_DELX_3  = 12       # mm - position of backing drop

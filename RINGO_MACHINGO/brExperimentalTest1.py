@@ -13,17 +13,18 @@ import time
 #r.head.grab()
 #time.sleep(0.5)
 
-z0 = 30
-x0 = 368
-delx1 = 2
+z0 = 31
+x0 = 367
+delx1 = 1
 delz1 = 2
-delx2 = 3
+delx2 = 2
 delz2 = 5
-delx3 = 12
-delz3 = 7
+delx3 = 10
+delz3 = 10
 zfinal = 10
 
 #Get into initial position
+r.head.grab()
 r.tinyG.write('g0 x'+str(x0))
 r.tinyG.write('g0 z'+str(z0))
 
@@ -37,9 +38,11 @@ r.tinyG.write('g1 f120 x'+str(x0-delx3)+'z'+str(z0-delz3))
 raw_input('?')
 r.tinyG.write('g0 x'+str(x0))
 r.tinyG.write('g0 z'+str(z0))
+time.sleep(3)
+r.head.drop()
 
 #Pull overlay over knife
-#r.tinyG.write('g1 f800 x200')
+#r.tinyG.write('g1 f800 x300')
 
 #r.tinyG.write('g0 y200')
 #time.sleep(10)
