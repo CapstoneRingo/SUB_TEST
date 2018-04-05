@@ -32,13 +32,13 @@ class Pneumatic:
             port = serial.Serial('/dev/ttyACM0',baudrate=115200,timeout=None)
         except:
             time.sleep(4)
-            print "*******Couldn't open port /dev/ttyACM0; trying to open /dev/ttyACM0 again"
+            # print "*******Couldn't open port /dev/ttyACM0; trying to open /dev/ttyACM0 again"
             port = serial.Serial('/dev/ttyACM0',baudrate=115200,timeout=None)
 
         port.write('gpio ' + cmd + ' ' + self.pinNo + ' \r')
 
         # Display to console
-        print "Pneumatic device <%s> set to %s via %s GPIO #%s" % (self.name,
+        # # print "Pneumatic device <%s> set to %s via %s GPIO #%s" % (self.name,
         disp, port.name, self.pinNo)
 
         time.sleep(0.1)
@@ -72,21 +72,21 @@ class TinyG:
         try:
             self.serPort = serial.Serial('/dev/ttyUSB0',baudrate=115200,timeout=0)
         except:
-            print "Couldn't open USB0"
+            # print "Couldn't open USB0"
             self.serPort = serial.Serial('/dev/ttyUSB1',baudrate=115200,timeout=0)
 
-        print "TinyG using port " + self.serPort.name
+        # print "TinyG using port " + self.serPort.name
 
     def write(self,cmd):
 
         try:
             port = serial.Serial('/dev/ttyUSB0',baudrate=115200,timeout=0)
         except:
-            print "###Couldn't open /dev/ttyUSB0; trying /dev/ttyUSB1"
+            # print "###Couldn't open /dev/ttyUSB0; trying /dev/ttyUSB1"
             port = serial.Serial('/dev/ttyUSB1',baudrate=115200,timeout=0)
 
         port.write(cmd + " \r")
-        print "TinyG wrote out %s via %s" % (cmd, port.name)
+        # print "TinyG wrote out %s via %s" % (cmd, port.name)
         port.close()
         time.sleep(0.2)
 
