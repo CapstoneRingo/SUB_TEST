@@ -79,8 +79,8 @@ TRAY_POS2_X = 647.7         # mm - position to OUT start
 TRAY_POS3_X = 783.0         # mm - position to IN start
 TRAY_POS4_X = 871.0         # mm - poistion to IN end
 
-TRAY_POS1_Y =  51.5#49.5         # mm - position of first vacuum contact
-TRAY_POS2_Y =  255.0#253.0         # mm - position of last vacuum contact
+TRAY_POS1_Y =  51.5#49.5    # mm - position of first vacuum contact
+TRAY_POS2_Y =  253.0        # mm - position of last vacuum contact
 
 Y_OFFSET    =   8.44        # gain - offset multiplier to calculate position.
 
@@ -88,7 +88,7 @@ JIG_PCB_DROP_X   =  112.0   #mm - Position to drop PCB into jig
 JIG_PCB_DROP_Y   =  183.0   #mm - Position to drop PCB into jig
 
 JIG_PCB_PICK_X = JIG_PCB_DROP_X  #mm - Position to pick PCB from jig
-JIG_PCB_PICK_Y = 178.0      #mm - Position to pick PCB from jig
+JIG_PCB_PICK_Y = 170.0      #mm - Position to pick PCB from jig
 
 OVERLAY_PICK_X = 377.0      #mm - Position to pick new overlay
 OVERLAY_PICK_Y = 430.0      #mm - Position to pick new overlay
@@ -107,7 +107,7 @@ CRIT_DELAY = 7.0            # seconds - maximium travel time delay
 
 CONTIN_MODE = True
 COMPLETE_FLAG = False       # flag to indicate that all PCB's in output Tray
-END_COUNT = 2
+END_COUNT = 50
 
 # DEFINE GLOBALS
 #r = RINGO()                 # create and init Machine Object
@@ -282,9 +282,9 @@ def setInOutput(x_pos_out, y_pos_out) :
     time.sleep(1)
     r.tinyG.write('g0 x' + str(JIG_PCB_PICK_X) +' y' + str(JIG_PCB_PICK_Y))
     time.sleep(3)
+    r.head.grab()
     r.head.extend()
     time.sleep(0.5)
-    r.head.grab()
     time.sleep(0.5)
     r.head.retract()
     time.sleep(1)

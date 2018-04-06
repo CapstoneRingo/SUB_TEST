@@ -53,23 +53,6 @@
 #   7. Pick and Place 3 - same procedure as 6, but for 3 PCB's
 #   8. Pick and Place 50 - same procedure as 6, but for 50 PCB's
 
-# BUGS TO FIX
-#   1. Position offset needs tuning for each position.
-#       RESULTS -- >
-#        TEST 1
-#           offset = 8.7
-#           correct placement = 36%
-#           still in input = 0
-
-#        TEST 2
-#           offset = 8.16
-#           correct placement = 60%
-#           still in input = 2
-#   2. Tray positioning blocks need to be square, Tray 2 is currently on an
-#       angle.
-#  x  3. Last placement is off. (tries to place the last PCB in the final spot)
-#  x  4. Exit case is wrong. should stop one before.
-
 from RINGO import *
 import time
 
@@ -79,35 +62,18 @@ TRAY_POS2_X = 647.7         # mm - position to OUT start
 TRAY_POS3_X = 783.0         # mm - position to IN start
 TRAY_POS4_X = 871.0         # mm - poistion to IN end
 
-TRAY_POS1_Y =  51.5#49.5    # mm - position of first vacuum contact
-TRAY_POS2_Y =  253.0        # mm - position of last vacuum contact
+TRAY_POS1_Y =  49.5         # mm - position of first vacuum contact
+TRAY_POS2_Y = 253.0         # mm - position of last vacuum contact
 
-Y_OFFSET    =   8.44        # gain - offset multiplier to calculate position.
-
-JIG_PCB_DROP_X   =  112.0   #mm - Position to drop PCB into jig
-JIG_PCB_DROP_Y   =  183.0   #mm - Position to drop PCB into jig
-
-JIG_PCB_PICK_X = JIG_PCB_DROP_X  #mm - Position to pick PCB from jig
-JIG_PCB_PICK_Y = 172.0      #mm - Position to pick PCB from jig
-
-OVERLAY_PICK_X = 377.0      #mm - Position to pick new overlay
-OVERLAY_PICK_Y = 430.0      #mm - Position to pick new overlay
-
-JIG_OVERLAY_DROP_X = 94.0   #mm - Position to drop overlay into jig
-JIG_OVERLAY_DROP_Y = 166.0  #mm - Position to drop overlay into jig
-
-ROLLER_Y = 150.0            #mm - Position to roll PCB
-ROLLER_MIDDLE = 240.0       #mm - Approximate Middle of PCB
-ROLLER_X_MIN = 204.0        #mm - Edge of Rolling Operation
-ROLLER_X_MAX = 275.0        #mm - Edge of Rolling Operation
+Y_OFFSET    =   8.44        # gain - offset multiplier to calculate position
 
 JOG_POS_Y   =   5.0         # mm - y Position of Jog Position
 
-CRIT_DELAY = 7.0            # seconds - maximium travel time delay
+CRIT_DELAY = 7              # seconds - maximium travel time delay
 
 CONTIN_MODE = True
 COMPLETE_FLAG = False       # flag to indicate that all PCB's in output Tray
-END_COUNT = 1
+END_COUNT = 51
 
 # DEFINE GLOBALS
 #r = RINGO()                 # create and init Machine Object
@@ -206,142 +172,22 @@ def getPCB(x_pos, y_pos) :
     global r
 
     # Move to pickup location, grab durring movement
-    r.tinyG.write('g0 y0')
-    r.head.rotateUp()
     r.tinyG.write('g0 x' + str(x_pos))
     time.sleep(5)
-    r.head.extend()
     r.tinyG.write('g0 y' + str(y_pos))
-    time.sleep(6)
+    r.head.extend()
+    time.sleep(4)
     r.head.grab()
     time.sleep(0.5)
     r.head.retract()
-    r.tinyG.write('g0 y0')
-    time.sleep(3)
-    r.head.rotateDown()
-    time.sleep(1)
-
-def PCBtoJig() :
-    global r
-    # Move to drop location - drop PCB
+    r.tinyG.write('g0 y40')
     time.sleep(4)
-    r.head.rotateDown()
-    r.tinyG.write('g0 x' + str(JIG_PCB_DROP_X))
-    time.sleep(5)
-    r.tinyG.write('g0 y' + str(JIG_PCB_DROP_Y))
-    time.sleep(4)
-    r.head.drop()
-    time.sleep(1)
-
-# This function fetches a new non-adhesive overlay.
-def overlayToJig() :
-
-    #Constants
-    z0 = 31.0
-    x0 = 367.0
-
-    delx1 = 1.0
-    delz1 = 2.0
-
-    delx2 = 3.0 #3
-    delz2 = 6.4
-
-    delx3 = 4.5 #6
-    delz3 = 7.5
-    delz4 = 8.0
-
-    peel_status = '0'
-    while peel_status == '0':
-        #Get into initial position
-        r.backingRemoval.motorOn()
-        r.head.rotateDown()
-        r.head.retract()
-        r.backingRemoval.push()
-        r.tinyG.write('g0 x377')
-        r.tinyG.write('g0 y430')
-        time.sleep(7)
-        r.head.extend()
-        time.sleep(1)
-        r.head.grab()
-        time.sleep(1)
-
-        r.tinyG.write('g0 x'+str(x0))
-        r.tinyG.write('g0 z'+str(z0))
-
-        for i in range(2):
-            r.tinyG.write('g1 f80 x'+str(x0-delx1)+' z'+str(z0-delz1))
-            time.sleep(0.5)
-            r.tinyG.write('g1 f160 x'+str(x0-delx2)+' z'+str(z0-delz2))
-            r.tinyG.write('g1 f160 x'+str(x0-delx3)+' z'+str(z0-delz3))
-            if i < 1:
-                r.tinyG.write('g0 x'+str(x0))
-                r.tinyG.write('g0 z'+str(z0))
-
-        peel_status = raw_input('Peel Successful?')
-        time.sleep(1)
-        if peel_status == '1':
-            #Pull overlay over knife
-            r.tinyG.write('g1 f1000 x362')
-            r.tinyG.write('g0 z23')
-            r.tinyG.write('g1 f1000 x359')
-            r.tinyG.write('g0 z22')
-            r.tinyG.write('g1 f200 x330 z'+str(z0-delz4))
-            #r.tinyG.write('g1 f400 x300')
-            r.tinyG.write('g0 x230')
-            r.tinyG.write('g28.2 z0')
-            time.sleep(20)
-            r.backingRemoval.motorOff()
-            r.head.retract()
-            time.sleep(1)
-            r.tinyG.write('g0 x' + str(JIG_OVERLAY_DROP_X) + ' y' + str(JIG_OVERLAY_DROP_Y))
-            time.sleep(4)
-            r.head.drop()
-            time.sleep(1)
-
-        elif peel_status == '0':
-            r.tinyG.write('g0 z10')
-            r.tinyG.write('g0 x200')
-            time.sleep(3)
-            r.head.drop()
-            r.head.retract()
-
-def rollOverlay():
-    global r
-    # Extend the Roller and roll starting from back to front.
-    # NOTE: Spencer said it may be better to roll the overlay starting in the
-    # middle
-    r.tinyG.write('g0 x' + str(ROLLER_MIDDLE) + ' y' + str(ROLLER_Y))
-    time.sleep(3)
-    r.jig.extend()
-    time.sleep(1)
-    r.head.rollerDown()
-    time.sleep(1)
-    r.tinyG.write('g0 x' + str(ROLLER_X_MIN))
-    r.tinyG.write('g0 x' + str(ROLLER_X_MAX))
-    time.sleep(4)
-    r.head.rollerUp()
-    time.sleep(1)
-    r.jig.retract()
 
 # setInOutput
 #
 # This function takes the two output positions and writes to them.
 def setInOutput(x_pos_out, y_pos_out) :
     global r
-
-    # Go grab the new part.
-    time.sleep(1)
-    r.tinyG.write('g0 x' + str(JIG_PCB_PICK_X) +' y' + str(JIG_PCB_PICK_Y))
-    time.sleep(3)
-    r.head.grab()
-    r.head.extend()
-    time.sleep(0.5)
-    time.sleep(0.5)
-    r.head.retract()
-    time.sleep(1)
-    r.tinyG.write('g0 y0')
-    time.sleep(3)
-    r.head.rotateUp()
 
     # Place in Output
     r.tinyG.write('g0 x' + str(x_pos_out))
@@ -350,16 +196,15 @@ def setInOutput(x_pos_out, y_pos_out) :
     time.sleep(4)
     r.head.extend()
     time.sleep(0.5)
+    r.tinyG.write('g0 y' + str(JOG_POS_Y))
     r.head.drop()
-    time.sleep(1)
-    r.tinyG.write('g0 y0')
     time.sleep(4)
 
 # getPCB()
 #
 #   This function manages all the movements and actions required to get the
 #   next PCB.
-def runForrest() :
+def run() :
     global CONTIN_MODE
     global currPos
     global END_COUNT
@@ -380,23 +225,17 @@ def runForrest() :
         print("Knight to A4!")
 
         getPCB(x_pos, y_pos)
-        PCBtoJig()
-        overlayToJig()
-        rollOverlay()
         setInOutput(x_pos_out, y_pos_out)
 
 def main() :
     global CONTIN_MODE
     global currPos
 
-    runForrest()
+    run()
     while(CONTIN_MODE) :
         print('CURRENT POSITION : ',currPos)
         runForrest()
 
 
     print("TrayUnloadTest is complete")
-
-
-#-----------------------------------
 main()
