@@ -39,7 +39,7 @@ class Pneumatic:
 
         # Display to console
         # # print "Pneumatic device <%s> set to %s via %s GPIO #%s" % (self.name,
-        disp, port.name, self.pinNo)
+        #disp, port.name, self.pinNo)
 
         time.sleep(0.1)
 

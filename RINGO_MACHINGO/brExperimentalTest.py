@@ -13,8 +13,8 @@ import time
 #r.head.grab()
 #time.sleep(0.5)
 
-z0 = 31
-x0 = 367
+z0 = 31.0
+x0 = 367.0
 
 delx1 = 1.0
 delz1 = 2.0

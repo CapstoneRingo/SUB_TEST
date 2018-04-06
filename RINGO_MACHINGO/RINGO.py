@@ -80,7 +80,7 @@ class RINGO:
         r = raw_input("HAS HOMING OPERATION BEEN COMPLETED??? (ENTER <YES> TO CONTINUE) ")
 
         if r == "<YES>":
-            # print "HOMING STATED TO BE COMPLETE"
+             print "HOMING STATED TO BE COMPLETE"
         else:
             # print "NOT A VALID CONFIRMATION FOR HOMING COMPLETION"
             self.checkHoming()
@@ -134,14 +134,8 @@ class RINGO:
         self.tinyG.write('{xtm:10000}') # set maximum x travel (for now)
         self.tinyG.write('{xtn:-1000}') # set minimum x travel (for now)
 
-<<<<<<< HEAD
         self.tinyG.write('{ysv:1000}')
-        self.tinyG.write('{yvm:15000}')
-=======
-
-        self.tinyG.write('{ysv:1000}')
-        self.tinyG.write('{yvm:10000}')
->>>>>>> 87663ef98c9b75ace32155a2cee14b1d2140b6e1
+        self.tinyG.write('{yvm:9000}')
         self.tinyG.write('{yfr:10000}')
         self.tinyG.write('{ytm:10000}')
         self.tinyG.write('{ytn:-1000}')
