@@ -88,12 +88,12 @@ JIG_PCB_DROP_X   =  112.0   #mm - Position to drop PCB into jig
 JIG_PCB_DROP_Y   =  183.0   #mm - Position to drop PCB into jig
 
 JIG_PCB_PICK_X = JIG_PCB_DROP_X  #mm - Position to pick PCB from jig
-JIG_PCB_PICK_Y = 172.0      #mm - Position to pick PCB from jig
+JIG_PCB_PICK_Y = 173.0      #mm - Position to pick PCB from jig
 
 OVERLAY_PICK_X = 377.0      #mm - Position to pick new overlay
 OVERLAY_PICK_Y = 430.0      #mm - Position to pick new overlay
 
-JIG_OVERLAY_DROP_X = 94.0   #mm - Position to drop overlay into jig
+JIG_OVERLAY_DROP_X = 95.0   #mm - Position to drop overlay into jig
 JIG_OVERLAY_DROP_Y = 166.0  #mm - Position to drop overlay into jig
 
 ROLLER_Y = 150.0            #mm - Position to roll PCB
@@ -238,17 +238,18 @@ def overlayToJig() :
 
     #Constants
     z0 = 31.0
-    x0 = 367.0
+    x0 = 366.0
 
-    delx1 = 1.0
+    delx1 = 1.2
     delz1 = 2.0
 
-    delx2 = 3.0 #3
+    delx2 = 3.7#3
     delz2 = 6.4
 
-    delx3 = 4.5 #6
-    delz3 = 7.5
-    delz4 = 8.0
+    delx3 = 5.0 #6
+    delz3 = 8.3
+    delz4 = 7.5
+
 
     peel_status = '0'
     while peel_status == '0':
@@ -257,8 +258,9 @@ def overlayToJig() :
         r.head.rotateDown()
         r.head.retract()
         r.backingRemoval.push()
-        r.tinyG.write('g0 x377')
+        r.tinyG.write('g0 x300')
         r.tinyG.write('g0 y430')
+        r.tinyG.write('g0 x377')
         time.sleep(7)
         r.head.extend()
         time.sleep(1)
@@ -277,30 +279,36 @@ def overlayToJig() :
                 r.tinyG.write('g0 x'+str(x0))
                 r.tinyG.write('g0 z'+str(z0))
 
-        peel_status = raw_input('Peel Successful?')
+
+        #Pull overlay over knife
+        r.tinyG.write('g1 f100 x361')
+        r.tinyG.write('g0 z22.4')
+        r.tinyG.write('g1 f100 x359')
+        r.tinyG.write('g0 z22.0')
+        r.tinyG.write('g1 f100 x357')
+        r.tinyG.write('g0 z21.5')
+        r.tinyG.write('g1 f100 x355')
+        r.tinyG.write('g0 z22.5')
+        r.tinyG.write('g1 f150 x320 z'+str(z0-delz4))
+        #r.tinyG.write('g1 f400 x300')
+        r.tinyG.write('g0 x230')
+        r.tinyG.write('g28.2 z0')
         time.sleep(1)
+
+        peel_status = raw_input('Peel Successful?')
+
         if peel_status == '1':
-            #Pull overlay over knife
-            r.tinyG.write('g1 f1000 x362')
-            r.tinyG.write('g0 z23')
-            r.tinyG.write('g1 f1000 x359')
-            r.tinyG.write('g0 z22')
-            r.tinyG.write('g1 f200 x330 z'+str(z0-delz4))
-            #r.tinyG.write('g1 f400 x300')
-            r.tinyG.write('g0 x230')
-            r.tinyG.write('g28.2 z0')
-            time.sleep(20)
             r.backingRemoval.motorOff()
             r.head.retract()
             time.sleep(1)
             r.tinyG.write('g0 x' + str(JIG_OVERLAY_DROP_X) + ' y' + str(JIG_OVERLAY_DROP_Y))
-            time.sleep(4)
+            time.sleep(6)
             r.head.drop()
             time.sleep(1)
 
         elif peel_status == '0':
             r.tinyG.write('g0 z10')
-            r.tinyG.write('g0 x200')
+            r.tinyG.write('g0 x100')
             time.sleep(3)
             r.head.drop()
             r.head.retract()

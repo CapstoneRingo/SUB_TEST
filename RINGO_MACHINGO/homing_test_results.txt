@@ -1,3 +1,0 @@
-Starting homing run 0 
-Homing run 0 is complete 
-Starting homing run 1 
